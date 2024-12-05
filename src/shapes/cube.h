@@ -14,8 +14,8 @@ public:
     std::optional<Intersection> checkIntersection();
 private:
     RenderShapeData cubeShape;
-    glm::vec4 p;
-    glm::vec4 d;
+    glm::vec4 p = glm::vec4(0.f, 0.f, 0.f, 0.f);
+    glm::vec4 d  = glm::vec4(0.f, 0.f, 0.f, 0.f);
 };
 
 #endif // CUBE_H

@@ -13,11 +13,13 @@ Cube::Cube(RenderShapeData shape, glm::vec4 wEye, glm::vec4 wDirection){
 std::optional<Intersection> Cube::checkIntersection(){
 
     Intersection intr = {.t = float(INT_MAX), .u = float(INT_MAX), .v = float(INT_MAX)};
-    float t1;
+    float t1 = 0.f;
 
     //+ xy plane intersection
     t1 = (0.5 - p[2]) / d[2];
-    if(-0.5 <= p[0] + t1 * d[0] && 0.5 >= p[0] + t1 * d[0] && -0.5 <= p[1] + t1 * d[1] && 0.5 >= p[1] + t1 * d[1]){
+
+    if((-0.5 <= p[0] + t1 * d[0]) && (0.5 >= p[0] + t1 * d[0]) && (-0.5 <= p[1] + t1 * d[1]) && (0.5 >= p[1] + t1 * d[1])){
+        //std::cout << "here";
         intr.t = t1;
         intr.normal = {0.0, 0.0, 1.0};
         intr.u = 0.5 + (p[0] + t1 * d[0]);
@@ -27,6 +29,7 @@ std::optional<Intersection> Cube::checkIntersection(){
     // - xy plane intersection
     t1 = (-0.5 - p[2]) / d[2];
     if(t1 < intr.t && -0.5 <= p[0] + t1 * d[0] && 0.5 >= p[0] + t1 * d[0] && -0.5 <= p[1] + t1 * d[1] && 0.5 >= p[1] + t1 * d[1]){
+        //std::cout << "here";
         intr.t = t1;
         intr.normal = {0.0, 0.0, -1.0};
         intr.u = 0.5 - (p[0] + t1 * d[0]);
@@ -36,6 +39,7 @@ std::optional<Intersection> Cube::checkIntersection(){
     // + xz plane intersection
     t1 = (0.5 - p[1]) / d[1];
     if(t1 < intr.t && -0.5 <= p[0] + t1 * d[0] && 0.5 >= p[0] + t1 * d[0] && -0.5 <= p[2] + t1 * d[2] && 0.5 >= p[2] + t1 * d[2]){
+        //std::cout << "here";
         intr.t = t1;
         intr.normal = {0.0, 1.0, 0.0};
         intr.u = 0.5 + (p[0] + t1 * d[0]);
@@ -45,6 +49,7 @@ std::optional<Intersection> Cube::checkIntersection(){
     // - xz plane intersection
     t1 = (-0.5 - p[1]) / d[1];
     if(t1 < intr.t && -0.5 <= p[0] + t1 * d[0] && 0.5 >= p[0] + t1 * d[0] && -0.5 <= p[2] + t1 * d[2] && 0.5 >= p[2] + t1 * d[2]){
+        //std::cout << "here";
         intr.t = t1;
         intr.normal = {0.0, -1.0, 0.0};
         intr.u = 0.5 + (p[0] + t1 * d[0]);
@@ -54,6 +59,7 @@ std::optional<Intersection> Cube::checkIntersection(){
     // + yz plane intersection
     t1 = (0.5 - p[0]) / d[0];
     if(t1 < intr.t && -0.5 <= p[1] + t1 * d[1] && 0.5 >= p[1] + t1 * d[1] && -0.5 <= p[2] + t1 * d[2] && 0.5 >= p[2] + t1 * d[2]){
+        //std::cout << "here";
         intr.t = t1;
         intr.normal = {1.0, 0.0, 0.0};
         intr.u = 0.5 - (p[2] + t1 * d[2]);
@@ -63,6 +69,7 @@ std::optional<Intersection> Cube::checkIntersection(){
     // - yz plane intersection
     t1 = (-0.5 - p[0]) / d[0];
     if(t1 < intr.t && -0.5 <= p[1] + t1 * d[1] && 0.5 >= p[1] + t1 * d[1] && -0.5 <= p[2] + t1 * d[2] && 0.5 >= p[2] + t1 * d[2]){
+        //std::cout << "here";
         intr.t = t1;
         intr.normal = {-1.0, 0.0, 0.0};
         intr.u = 0.5 + (p[2] + t1 * d[2]);
@@ -70,6 +77,7 @@ std::optional<Intersection> Cube::checkIntersection(){
     }
 
     if(intr.t < float(INT_MAX)){
+        //std::cout << "here";
         glm::mat4 ctm = cubeShape.ctm;
         glm::mat3 m33;
         for(int i = 0; i < 3; i++){

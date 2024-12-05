@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 # Sets project name
-project(projects_ray LANGUAGES CXX)
+project(project_bean LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -45,16 +45,17 @@ add_executable(${PROJECT_NAME}
   src/utils/imagereader.h src/utils/imagereader.cpp
   src/utils/phongillumination.h
   src/utils/phongillumination.cpp
-  src/shapes/sphere.h
 
   src/shapes/cube.h
   src/shapes/cube.cpp
   src/shapes/cylinder.h
-  src/shapes/cone.h
   src/shapes/cylinder.cpp
+  src/shapes/cone.h
   src/shapes/cone.cpp
+  src/shapes/sphere.h
   src/shapes/sphere.cpp
-
+  src/shapes/bvh.cpp
+  src/shapes/bvh.h
 )
 
 # GLM: this creates its library and allows you to `#include "glm/..."`

@@ -51,9 +51,9 @@ private:
 };
 
 struct Intersection{
-    float t;
-    glm::vec3 normal;
-    SceneMaterial material;
+    float t = float(INT_MAX);
+    glm::vec3 normal = glm::vec3(0.0);
+    SceneMaterial material = SceneMaterial();
     float u = float(INT_MAX);
     float v = float(INT_MAX);
     std::optional<Image> map = std::nullopt;
