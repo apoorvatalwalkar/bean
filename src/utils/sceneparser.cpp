@@ -40,13 +40,30 @@ void SceneParser::appendLists(glm::mat4 ctmToThisPoint, SceneNode* current, Rend
 
     std::vector<ScenePrimitive*> pmtvs = current->primitives;
     for(int i =0; i < pmtvs.size(); i++){
-        if(pmtvs[i]->material.textureMap.filename.empty()){
-            renderData.shapes.push_back(RenderShapeData{*pmtvs[i], newMatrix, glm::inverse(newMatrix), std::nullopt});
+        RenderShapeData shapeData;
+        shapeData.primitive = *pmtvs[i];
+        shapeData.ctm = newMatrix;
+        shapeData.inverse = glm::inverse(newMatrix);
+
+        if (!pmtvs[i]->material.textureMap.filename.empty()){
+            shapeData.image = loadImageFromFile(pmtvs[i]->material.textureMap.filename);
         }
-        else{
-            renderData.shapes.push_back(RenderShapeData{*pmtvs[i], newMatrix, glm::inverse(newMatrix), loadImageFromFile(pmtvs[i]->material.textureMap.filename)});
+        if (pmtvs[i]->type == PrimitiveType::PRIMITIVE_MESH) {
+            // shapeData.primitive.meshfile = pmtvs[i]->meshfile;
+            shapeData.primitive.meshfile = "bean_meshfile.obj";
         }
+        renderData.shapes.push_back(shapeData);
     }
+
+    // std::vector<ScenePrimitive*> pmtvs = current->primitives;
+    // for(int i =0; i < pmtvs.size(); i++){
+    //     if(pmtvs[i]->material.textureMap.filename.empty()){
+    //         renderData.shapes.push_back(RenderShapeData{*pmtvs[i], newMatrix, glm::inverse(newMatrix), std::nullopt});
+    //     }
+    //     else{
+    //         renderData.shapes.push_back(RenderShapeData{*pmtvs[i], newMatrix, glm::inverse(newMatrix), loadImageFromFile(pmtvs[i]->material.textureMap.filename)});
+    //     }
+    // }
 
     std::vector<SceneLight*>lghts = current->lights;
     for(int i = 0; i < lghts.size(); i++){

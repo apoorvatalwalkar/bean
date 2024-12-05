@@ -4,10 +4,13 @@
 #include "shapes/cube.h"
 #include "shapes/cylinder.h"
 #include "shapes/cone.h"
+#include "shapes/mesh.h"
 #include <cmath>
 #include <optional>
 #include <iostream>
 #include "utils/phongillumination.h"
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "utils/tiny_obj_loader.h"
 
 
 RayTracer::RayTracer(Config config) :
@@ -44,34 +47,37 @@ void RayTracer::render(RGBA *imageData, const RayTraceScene &scene) {
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
 
-            //shoot ray through each pixel
-            float x = 2 * k * tan(thetaW / 2.0) * ((j + 0.5)/width - 0.5);
-            float y = 2 * k * tan(thetaH / 2.0) * ((height - i - 1 + 0.5)/height - 0.5);
-            float z = 0 - k;
+            if ((i > 409 && i < 420) && (j > 489 && j < 500)) {
 
-            //eye + t * direction is the ray (in camera space)
-            glm::vec4 cEye = {0.0, 0.0, 0.0, 1.0};
-            glm::vec4 cDirection = {x, y, z, 0.0};
+                //shoot ray through each pixel
+                float x = 2 * k * tan(thetaW / 2.0) * ((j + 0.5)/width - 0.5);
+                float y = 2 * k * tan(thetaH / 2.0) * ((height - i - 1 + 0.5)/height - 0.5);
+                float z = 0 - k;
 
-            glm::vec4 wEye = inverseCamera * cEye;
-            glm::vec4 wDirection = inverseCamera * glm::normalize(cDirection);
+                //eye + t * direction is the ray (in camera space)
+                glm::vec4 cEye = {0.0, 0.0, 0.0, 1.0};
+                glm::vec4 cDirection = {x, y, z, 0.0};
 
-            //check if ray hits any object
-            std::optional<Intersection> result = checkIntersection(wEye, wDirection, shapes);
+                glm::vec4 wEye = inverseCamera * cEye;
+                glm::vec4 wDirection = inverseCamera * glm::normalize(cDirection);
 
-            if(result.has_value()){
-                Intersection intr = result.value();
+                //check if ray hits any object
+                std::optional<Intersection> result = checkIntersection(wEye, wDirection, shapes);
 
-                glm::vec4 position = {wEye[0] + intr.t * wDirection[0], wEye[1] + intr.t * wDirection[1], wEye[2] + intr.t * wDirection[2], 1};
+                if(result.has_value()){
+                    Intersection intr = result.value();
 
-                RGBA pixelVal = ph.phong(
-                    position,
-                    intr.normal,
-                    camPosition - position,
-                    intr.u, intr.v,
-                    intr.material);
+                    glm::vec4 position = {wEye[0] + intr.t * wDirection[0], wEye[1] + intr.t * wDirection[1], wEye[2] + intr.t * wDirection[2], 1};
 
-                imageData[i * width + j] = pixelVal;
+                    RGBA pixelVal = ph.phong(
+                        position,
+                        intr.normal,
+                        camPosition - position,
+                        intr.u, intr.v,
+                        intr.material);
+
+                    imageData[i * width + j] = pixelVal;
+                }
             }
         }
     }
@@ -84,6 +90,10 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
 
         RenderShapeData curr = shapes[shape];
         std::optional<Intersection> result;
+        if (curr.primitive.type == PrimitiveType::PRIMITIVE_MESH) {
+            Mesh mesh {shapes[shape], p, d};
+            result = mesh.checkIntersection();
+        }
 
         if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE){
             Sphere sphere {shapes[shape], p, d};
