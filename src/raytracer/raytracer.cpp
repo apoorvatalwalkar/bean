@@ -84,7 +84,7 @@ void RayTracer::render(RGBA *imageData, const RayTraceScene &scene) {
 }
 
 std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vector<RenderShapeData> shapes){
-    Intersection closest = {float(INT_MAX)};
+    Intersection closest = {float(INT_MAX), glm::vec3(0.0), shapes[0].primitive.material, 0, 0, std::nullopt};
 
     for(int shape = shapes.size() - 1; shape >= 0; shape--){
 
@@ -99,17 +99,32 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
             Sphere sphere {shapes[shape], p, d};
             result = sphere.checkIntersection();
         }
+
         if (curr.primitive.type == PrimitiveType::PRIMITIVE_CUBE){
             Cube cube {shapes[shape], p, d};
             result = cube.checkIntersection();
         }
-        if (curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER){
-            Cylinder cylinder {shapes[shape], p, d};
-            result = cylinder.checkIntersection();
-        }
-        if (curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
-            Cone cone {shapes[shape], p, d};
-            result = cone.checkIntersection();
+
+        if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE ||
+                 curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER ||
+                 curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
+
+            // Volume volume {shapes[shape], p, d};
+            // if(volume.checkIntersection()){
+                if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE){
+                    Sphere sphere {shapes[shape], p, d};
+                    result = sphere.checkIntersection();
+                }
+
+                if (curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER){
+                    Cylinder cylinder {shapes[shape], p, d};
+                    result = cylinder.checkIntersection();
+                }
+                if (curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
+                    Cone cone {shapes[shape], p, d};
+                    result = cone.checkIntersection();
+                }
+            //}
         }
 
         if(result.has_value() && result.value().t < closest.t && result.value().t >= 0){
