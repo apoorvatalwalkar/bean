@@ -78,7 +78,7 @@ glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
             float facing = glm::dot(toLight, normal);
             float maxT = float(INT_MAX);
             if(light.type == LightType::LIGHT_POINT){ maxT = distance; }
-            if(facing > 0 && config.enableShadow && checkShadow(position, toLight, maxT)){
+            if(facing > 0 && (!config.enableShadow || (config.enableShadow && checkShadow(position, toLight, maxT)))){
 
                 glm::vec3 reflection= 2 * facing * normal - toLight;
                 float close = glm::dot(iRay, glm::normalize(reflection));
@@ -104,7 +104,7 @@ glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
 
             float angle = acos(glm::dot(fromLight, toLight));
 
-            if(angle < light.angle && config.enableShadow && checkShadow(position, toLight, distance)){
+            if(angle < light.angle && (!config.enableShadow || (config.enableShadow && checkShadow(position, toLight, distance)))){
 
                 float facing = glm::dot(toLight, normal);
                 glm::vec3 reflection= 2 * facing * normal - toLight;

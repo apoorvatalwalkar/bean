@@ -25,7 +25,7 @@ public:
     const SceneGlobalData& getGlobalData() const;
 
     // The getter of the shared pointer to the camera instance of the scene
-    const Camera& getCamera() const;
+    const Camera getCamera() const;
 
     const std::vector<SceneLightData>& getLights() const;
     const std::vector<RenderShapeData>& getShapes() const;

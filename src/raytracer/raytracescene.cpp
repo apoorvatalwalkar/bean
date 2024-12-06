@@ -32,7 +32,7 @@ const std::vector<RenderShapeData>& RayTraceScene::getShapes() const{
     return data.shapes;
 }
 
-const Camera& RayTraceScene::getCamera() const {
+const Camera RayTraceScene::getCamera() const {
     Camera camera;
     camera.height = h;
     camera.width = w;

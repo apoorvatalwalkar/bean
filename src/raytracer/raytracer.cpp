@@ -4,6 +4,7 @@
 #include "shapes/cube.h"
 #include "shapes/cylinder.h"
 #include "shapes/cone.h"
+#include "shapes/bvh.h"
 #include "shapes/mesh.h"
 #include <cmath>
 #include <optional>
@@ -114,8 +115,8 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
                  curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER ||
                  curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
 
-            // Volume volume {shapes[shape], p, d};
-            // if(volume.checkIntersection()){
+            Volume volume {shapes[shape], p, d};
+            if(volume.checkIntersection()){
                 if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE){
                     Sphere sphere {shapes[shape], p, d};
                     result = sphere.checkIntersection();
@@ -129,7 +130,7 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
                     Cone cone {shapes[shape], p, d};
                     result = cone.checkIntersection();
                 }
-            //}
+            }
         }
 
         if(result.has_value() && result.value().t < closest.t && result.value().t >= 0){
