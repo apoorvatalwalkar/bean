@@ -18,7 +18,7 @@ private:
     class Triangle {
     public:
         Triangle(/*glm::vec4 wEye, glm::vec4 wDirection,*/ glm::vec3 v0, glm::vec3 v1, glm::vec3 v2, glm::vec3 normal);
-        std::optional<Intersection> checkIntersection(glm::vec4 pWorld, glm::vec4 dWorld);
+        std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, glm::mat4 ctm);
     private:
         glm::vec4 p;
         glm::vec4 d;

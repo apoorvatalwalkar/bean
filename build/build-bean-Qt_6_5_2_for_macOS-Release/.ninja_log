@@ -1,0 +1,19 @@
+# ninja log v6
+3	60	1733337491183525301	projects_ray_autogen/timestamp	5c5943e354221c44
+3	60	1733337491183525301	projects_ray_autogen/mocs_compilation.cpp	5c5943e354221c44
+3	60	1733337491183525301	/Users/eleanorpark/csclasses/cs1230/bean/build/build-bean-Qt_6_5_2_for_macOS-Release/projects_ray_autogen/timestamp	5c5943e354221c44
+3	60	1733337491183525301	/Users/eleanorpark/csclasses/cs1230/bean/build/build-bean-Qt_6_5_2_for_macOS-Release/projects_ray_autogen/mocs_compilation.cpp	5c5943e354221c44
+61	160	1733337491195276086	CMakeFiles/projects_ray.dir/projects_ray_autogen/mocs_compilation.cpp.o	61617ea47b529f7e
+65	3181	1733337491198810805	CMakeFiles/projects_ray.dir/src/utils/imagereader.cpp.o	7f37d0f49a4eb800
+62	3362	1733337491195693379	CMakeFiles/projects_ray.dir/src/camera/camera.cpp.o	ddb6fb652c6549d3
+69	3502	1733337491203018609	CMakeFiles/projects_ray.dir/src/shapes/cube.cpp.o	bd053c67bf493b3b
+160	3569	1733337491294343006	CMakeFiles/projects_ray.dir/src/shapes/cylinder.cpp.o	9ba4a381ce0a3d95
+62	3701	1733337491196003755	CMakeFiles/projects_ray.dir/src/raytracer/raytracescene.cpp.o	220fe96c40ed48ed
+67	3838	1733337491200851394	CMakeFiles/projects_ray.dir/src/utils/phongillumination.cpp.o	f6bcc67f7337cb30
+62	4004	1733337491195850421	CMakeFiles/projects_ray.dir/src/raytracer/raytracer.cpp.o	f7299cec8d46f388
+63	4453	1733337491197422051	CMakeFiles/projects_ray.dir/src/utils/sceneparser.cpp.o	c6eadfd901a955d8
+61	4833	1733337491195525754	CMakeFiles/projects_ray.dir/src/main.cpp.o	ace753fbdad322e4
+3188	4909	1733337494322684214	CMakeFiles/projects_ray.dir/src/shapes/cone.cpp.o	aded3ab559df63e
+3366	4949	1733337494500595950	CMakeFiles/projects_ray.dir/src/shapes/sphere.cpp.o	2d582ddab7fb7850
+63	5498	1733337491197261259	CMakeFiles/projects_ray.dir/src/utils/scenefilereader.cpp.o	8859d34ad9af29d4
+5502	5755	1733337496635950588	projects_ray	36d98a907efe9d87

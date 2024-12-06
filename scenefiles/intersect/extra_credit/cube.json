@@ -25,14 +25,12 @@
     {
       "groups": [
         {
-          "scale": [2.5, 2.5, 2.5],
-          "rotate": [0.0, 1.0, 0.0, -50.0],
           "primitives": [
             {
               "type": "mesh",
               "ambient": [1.0, 0.0, 0.0],
               "meshFile": "meshes/cube.obj",
-              "diffuse": [0.43, 0.73, 0.99],
+              "diffuse": [1.0, 0.0, 0.0],
               "specular": [1.0, 1.0, 1.0],
               "shininess": 30.0
             }

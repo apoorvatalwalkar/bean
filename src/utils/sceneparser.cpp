@@ -49,8 +49,8 @@ void SceneParser::appendLists(glm::mat4 ctmToThisPoint, SceneNode* current, Rend
             shapeData.image = loadImageFromFile(pmtvs[i]->material.textureMap.filename);
         }
         if (pmtvs[i]->type == PrimitiveType::PRIMITIVE_MESH) {
-            // shapeData.primitive.meshfile = pmtvs[i]->meshfile;
-            shapeData.primitive.meshfile = "bean_meshfile.obj";
+            shapeData.primitive.meshfile = pmtvs[i]->meshfile;
+            // shapeData.primitive.meshfile = "bean_meshfile.obj";
         }
         renderData.shapes.push_back(shapeData);
     }

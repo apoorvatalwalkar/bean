@@ -13,10 +13,13 @@ Mesh::Mesh(RenderShapeData shape, glm::vec4 wEye, glm::vec4 wDirection){
 std::optional<Intersection> Mesh::checkIntersection(){
     Intersection intr = {.t = float(INT_MAX), .u = float(INT_MAX), .v = float(INT_MAX)};
     for (int i = 0; i < m_triangles.size(); ++i) {
-        std::optional<Intersection> result = m_triangles[i].checkIntersection(pWorld, dWorld);
+        std::optional<Intersection> result = m_triangles[i].checkIntersection(p, d, mesh.ctm);
         // may need to check result value
         if (result.has_value() && result->t < intr.t && result->t >= 1e-4) {
             intr.t = result->t;
+            intr.normal = result->normal;
+            intr.u = result->u;
+            intr.v = result->v;
         }
     }
     if (intr.t < float(INT_MAX)) {
@@ -92,7 +95,7 @@ void Mesh::load(const std::string& filepath) {
 Mesh::Triangle::Triangle(/*glm::vec4 wEye, glm::vec4 wDirection,*/ glm::vec3 v0, glm::vec3 v1, glm::vec3 v2, glm::vec3 normal)
     : m_v0(v0), m_v1(v1), m_v2(v2), m_normal(normal) {}
 
-std::optional<Intersection> Mesh::Triangle::checkIntersection(glm::vec4 p, glm::vec4 d) {
+std::optional<Intersection> Mesh::Triangle::checkIntersection(glm::vec4 p, glm::vec4 d, glm::mat4 ctm) {
     float epsilon = 1e-7;
     glm::vec3 edge1 = m_v1 - m_v0;
     glm::vec3 edge2 = m_v2 - m_v0;
@@ -117,13 +120,19 @@ std::optional<Intersection> Mesh::Triangle::checkIntersection(glm::vec4 p, glm::
     }
     float t = inv_det * dot(edge2, s_cross_e1);
     if (t > epsilon) {
+        glm::mat3 m33;
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                m33[i][j] = ctm[i][j];
+            }
+        }
         Intersection intr;
         intr.t = t;
-        intr.normal = m_normal;
+        // intr.normal = glm::normalize(glm::transpose(glm::inverse(m33)) * m_normal);
+        intr.normal = glm::normalize(glm::cross(m_v1 - m_v0, m_v2 - m_v0));
         intr.u = u;
         intr.v = v;
         return intr;
-
     } else {
         return std::nullopt;
     }
