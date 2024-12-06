@@ -1067,7 +1067,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "projects_ray"
+			"value" : "project_bean"
 		},
 		{
 			"name" : "CMAKE_RANLIB",
@@ -5112,6 +5112,42 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "/usr/local"
+		},
+		{
+			"name" : "project_bean_BINARY_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "/Users/eleanorpark/csclasses/cs1230/bean/build/build-bean-Qt_6_5_2_for_macOS-Debug"
+		},
+		{
+			"name" : "project_bean_IS_TOP_LEVEL",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "ON"
+		},
+		{
+			"name" : "project_bean_SOURCE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "/Users/eleanorpark/csclasses/cs1230/bean"
 		},
 		{
 			"name" : "projects_ray_BINARY_DIR",

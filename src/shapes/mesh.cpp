@@ -29,6 +29,19 @@ std::optional<Intersection> Mesh::checkIntersection(){
     return std::nullopt;
 }
 
+// void Mesh::load(const std::string& filepath) {
+//     objl::Loader loader;
+//     loader.LoadFile(filepath);
+
+//     for (int i = 0; i < loader.LoadedVertices.size(); i+=3 ) {
+//         glm::vec3 v0 = glm::vec3(loader.LoadedVertices[i].Position.X, loader.LoadedVertices[i].Position.Y, loader.LoadedVertices[i].Position.Z);
+//         glm::vec3 v1 = glm::vec3(loader.LoadedVertices[i + 1].Position.X, loader.LoadedVertices[i + 1].Position.Y, loader.LoadedVertices[i + 1].Position.Z);
+//         glm::vec3 v2 = glm::vec3(loader.LoadedVertices[i + 2].Position.X, loader.LoadedVertices[i + 2].Position.Y, loader.LoadedVertices[i + 2].Position.Z);
+//         glm::vec3 normal = glm::normalize(glm::cross(v1 - v0, v2 - v0));
+//         m_triangles.push_back(Triangle{v0, v1, v2, normal});
+//     }
+// }
+
 void Mesh::load(const std::string& filepath) {
     tinyobj::ObjReaderConfig reader_config;
     tinyobj::ObjReader reader;
@@ -79,14 +92,19 @@ void Mesh::load(const std::string& filepath) {
                 }
                 if (idx.normal_index >= 0) {
                     normal = glm::vec3(
-                        attrib.normals[3*size_t(idx.normal_index)+0],
-                        attrib.normals[3*size_t(idx.normal_index)+1],
-                        attrib.normals[3*size_t(idx.normal_index)+2]);
+                        attrib.normals[3*size_t(idx.normal_index) + 0],
+                        attrib.normals[3*size_t(idx.normal_index) + 1],
+                        attrib.normals[3*size_t(idx.normal_index) + 2]);
                 } else {
                     break;
                 }
-                m_triangles.push_back(Triangle{v0, v1, v2, normal});
             }
+            // if (f == 0) {
+            //     std::cout << v0.x << " " << v0.y << " " << v0.z << std::endl;
+            //     std::cout << v1.x << " " << v1.y << " " << v1.z << std::endl;
+            //     std::cout << v2.x << " " << v2.y << " " << v2.z << std::endl;
+            // }
+            m_triangles.push_back(Triangle{v0, v1, v2, normal});
             index_offset += fv;
         }
     }

@@ -29,3 +29,4 @@
 /Users/eleanorpark/csclasses/cs1230/bean/src/raytracer/raytracescene.cpp
 /Users/eleanorpark/csclasses/cs1230/bean/src/camera/camera.h
 /Users/eleanorpark/csclasses/cs1230/bean/src/raytracer/raytracescene.h
+/Users/eleanorpark/csclasses/cs1230/bean/src/utils/OBJ_Loader.h

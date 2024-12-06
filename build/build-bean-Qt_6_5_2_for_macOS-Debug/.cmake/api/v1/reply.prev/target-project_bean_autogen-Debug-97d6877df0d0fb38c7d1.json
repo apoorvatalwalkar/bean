@@ -17,12 +17,12 @@
 	"dependencies" : 
 	[
 		{
-			"id" : "projects_ray_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
+			"id" : "project_bean_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "projects_ray_autogen::@6890427a1f51a3e7e1df",
+	"id" : "project_bean_autogen::@6890427a1f51a3e7e1df",
 	"isGeneratorProvided" : true,
-	"name" : "projects_ray_autogen",
+	"name" : "project_bean_autogen",
 	"paths" : 
 	{
 		"build" : ".",
@@ -51,19 +51,19 @@
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/build-bean-Qt_6_5_2_for_macOS-Debug/CMakeFiles/projects_ray_autogen",
+			"path" : "build/build-bean-Qt_6_5_2_for_macOS-Debug/CMakeFiles/project_bean_autogen",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/build-bean-Qt_6_5_2_for_macOS-Debug/CMakeFiles/projects_ray_autogen.rule",
+			"path" : "build/build-bean-Qt_6_5_2_for_macOS-Debug/CMakeFiles/project_bean_autogen.rule",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/build-bean-Qt_6_5_2_for_macOS-Debug/projects_ray_autogen/timestamp.rule",
+			"path" : "build/build-bean-Qt_6_5_2_for_macOS-Debug/project_bean_autogen/timestamp.rule",
 			"sourceGroupIndex" : 1
 		}
 	],

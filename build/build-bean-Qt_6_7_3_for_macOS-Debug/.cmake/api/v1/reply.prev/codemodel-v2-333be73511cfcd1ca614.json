@@ -59,14 +59,14 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "project_bean::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-project_bean-Debug-473bb1107e6c8c539943.json",
+					"jsonFile" : "target-project_bean-Debug-5d5db3e963e958103316.json",
 					"name" : "project_bean",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "project_bean_autogen::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-project_bean_autogen-Debug-97d6877df0d0fb38c7d1.json",
+					"jsonFile" : "target-project_bean_autogen-Debug-1a548f8d194a5ad3ff84.json",
 					"name" : "project_bean_autogen",
 					"projectIndex" : 0
 				},
@@ -83,7 +83,7 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/eleanorpark/csclasses/cs1230/bean/build/build-bean-Qt_6_5_2_for_macOS-Debug",
+		"build" : "/Users/eleanorpark/csclasses/cs1230/bean/build/build-bean-Qt_6_7_3_for_macOS-Debug",
 		"source" : "/Users/eleanorpark/csclasses/cs1230/bean"
 	},
 	"version" : 
