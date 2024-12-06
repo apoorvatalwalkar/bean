@@ -1,2 +1,0 @@
-set(__QT_DEPLOY_TARGET_project_bean_FILE /Users/eleanorpark/csclasses/cs1230/bean/build/build-bean-Qt_6_7_3_for_macOS-Debug/project_bean)
-set(__QT_DEPLOY_TARGET_project_bean_TYPE EXECUTABLE)
