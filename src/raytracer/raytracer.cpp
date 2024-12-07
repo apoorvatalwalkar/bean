@@ -48,12 +48,12 @@ void RayTracer::render(RGBA *imageData, const RayTraceScene &scene) {
     glm::mat4 inverseCamera = camera.getInverseViewMatrix();
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
-            // if ((i * width + j) % 1000 == 0) {
-            //     std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
-            // }
+            if ((i * width + j) % 1000 == 0) {
+                std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
+            }
 
             // if (i == 630 && j == 296) {
-            // if ((i > 267 && i < 306) && (j > 589 && j < 659)) {t
+            // if ((i > 267 && i < 306) && (j > 589 && j < 659)) {
 
                 //shoot ray through each pixel
                 float x = 2 * k * tan(thetaW / 2.0) * ((j + 0.5)/width - 0.5);

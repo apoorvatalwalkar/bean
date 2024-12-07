@@ -67,26 +67,21 @@ void Mesh::load(const std::string& filepath) {
             // Loop over vertices in the face.
             for (size_t v = 0; v < 3; v++) {
                 tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
+                glm::vec3 vertex = glm::vec3(
+                    attrib.vertices[3 * size_t(idx.vertex_index) + 0],
+                    attrib.vertices[3 * size_t(idx.vertex_index) + 1],
+                    attrib.vertices[3 * size_t(idx.vertex_index) + 2]);
                 switch (v) {
                 case 0: {
-                    v0 = glm::vec3(
-                            attrib.vertices[3 * size_t(idx.vertex_index) + 0],
-                            attrib.vertices[3 * size_t(idx.vertex_index) + 1],
-                            attrib.vertices[3 * size_t(idx.vertex_index) + 2]);
+                    v0 = vertex;
                     break;
                 }
                 case 1: {
-                    v1 = glm::vec3(
-                        attrib.vertices[3 * size_t(idx.vertex_index) + 0],
-                        attrib.vertices[3 * size_t(idx.vertex_index) + 1],
-                        attrib.vertices[3 * size_t(idx.vertex_index) + 2]);
+                    v1 = vertex;
                     break;
                 }
                 case 2: {
-                    v2 = glm::vec3(
-                        attrib.vertices[3 * size_t(idx.vertex_index) + 0],
-                        attrib.vertices[3 * size_t(idx.vertex_index) + 1],
-                        attrib.vertices[3 * size_t(idx.vertex_index) + 2]);
+                    v2 = vertex;
                     break;
                 }
                 }
@@ -97,6 +92,25 @@ void Mesh::load(const std::string& filepath) {
                         attrib.normals[3*size_t(idx.normal_index) + 2]);
                 } else {
                     break;
+                }
+                // populate min and max coordinates for bvh bounding box calculation
+                if (vertex.x < minX) {
+                    minX = vertex.x;
+                }
+                if (vertex.x > maxX) {
+                    maxX = vertex.x;
+                }
+                if (vertex.y < minY) {
+                    minY = vertex.y;
+                }
+                if (vertex.y > maxY) {
+                    maxY = vertex.y;
+                }
+                if (vertex.z < minZ) {
+                    minZ = vertex.z;
+                }
+                if (vertex.z > maxZ) {
+                    maxZ = vertex.z;
                 }
             }
             // if (f == 0) {

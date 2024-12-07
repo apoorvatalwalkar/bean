@@ -35,6 +35,14 @@ private:
     glm::vec4 p;
     glm::vec4 d;
 
+    // for mesh bounding box coordinates
+    float minX = std::numeric_limits<float>::infinity();
+    float minY = std::numeric_limits<float>::infinity();
+    float minZ = std::numeric_limits<float>::infinity();
+    float maxX = -std::numeric_limits<float>::infinity();
+    float maxY = -std::numeric_limits<float>::infinity();
+    float maxZ = -std::numeric_limits<float>::infinity();
+
     void load(const std::string &filePath);
     std::vector<Triangle> m_triangles;
 };
