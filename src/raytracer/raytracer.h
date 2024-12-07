@@ -4,13 +4,9 @@
 #include "utils/rgba.h"
 #include "utils/sceneparser.h"
 #include <optional>
-
-// A forward declaration for the RaytraceScene class
-
-class RayTraceScene;
+#include "raytracescene.h"
 
 // A class representing a ray-tracer
-
 class RayTracer
 {
 public:
@@ -26,19 +22,22 @@ public:
         bool enableDepthOfField  = false;
         int maxRecursiveDepth    = 4;
         bool onlyRenderNormals   = false;
+        bool cameraMovement      = false;
     };
 
 public:
-    RayTracer(Config config);
+    RayTracer(Config config, QImage image, QString imagePath);
 
     // Renders the scene synchronously.
     // The ray-tracer will render the scene and fill imageData in-place.
     // @param imageData The pointer to the imageData to be filled.
     // @param scene The scene to be rendered.
-    void render(RGBA *imageData, const RayTraceScene &scene);
+    void render(/*RGBA *imageData, */ const RayTraceScene &scene);
 
 private:
     const Config m_config;
+    QImage m_image;
+    QString m_imagePath;
     SceneGlobalData globalData;
     std::vector<SceneLightData> lights;
     std::vector<RenderShapeData> shapes;
@@ -48,6 +47,9 @@ private:
     RGBA sphere();
     RGBA cylinder();
     RGBA cone();
+
+    void renderOneScene(RGBA *imageData, const RayTraceScene &scene);
+    glm::mat4 myRotate(float angleDegrees, glm::vec3 axis);
 };
 
 struct Intersection{

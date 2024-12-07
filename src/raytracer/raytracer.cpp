@@ -15,11 +15,80 @@
 #include "utils/tiny_obj_loader.h"
 
 
-RayTracer::RayTracer(Config config) :
+RayTracer::RayTracer(Config config, QImage image, QString imagePath):
     m_config(config)
-{}
+{
+    m_image = image;
+    m_imagePath = imagePath;
+}
 
-void RayTracer::render(RGBA *imageData, const RayTraceScene &scene) {
+void RayTracer::render(const RayTraceScene &scene) {
+
+    SceneCameraData original = scene.cameraData;
+    SceneCameraData currData = scene.cameraData;
+
+    int frames = 1;
+    if(m_config.cameraMovement){ frames = 160;}
+
+    for(int i = 0; i < frames; i++){
+        m_image.fill(Qt::black);
+        RGBA *imageData = reinterpret_cast<RGBA *>(m_image.bits());
+
+        SceneCameraData newData = original;
+        RayTraceScene newScene = scene;
+
+        // camera movement code
+        if(m_config.cameraMovement) {
+
+            glm::vec3 up3 = glm::vec3(currData.up);
+            glm::vec3 look3 = glm::vec3(currData.look);
+            glm::vec3 perp = glm::cross(up3, look3);
+
+            glm::mat4 rotationX = myRotate(-0.6, glm::vec3(0, 1, 0));
+            newData.look = rotationX * currData.look;
+            newData.up = rotationX * currData.up;
+
+            newData.pos = currData.pos - float(i / 180.f) * glm::normalize(currData.look) - float(i/180.f) * glm::vec4(perp, 0.f);
+
+            newScene.cameraData = newData;
+            currData = newData;
+        }
+
+        // render scene
+        renderOneScene(imageData, newScene);
+
+        //save image
+        bool success;
+        if(m_imagePath.contains("png")){
+            success = m_image.save(m_imagePath);
+            if (success) {
+                std::cout << "Saved rendered image to \"" << m_imagePath.toStdString() << "\"" << std::endl;
+            } else {
+                std::cerr << "Error: failed to save image to \"" << m_imagePath.toStdString() << "\"" << std::endl;
+            }
+        }
+        else{
+            success = m_image.save(m_imagePath + QString::fromStdString(std::to_string(i)) + ".png");
+
+            if (success) {
+                std::cout << "Saved rendered image to \"" << m_imagePath.toStdString() << i << ".png\"" << std::endl;
+            } else {
+                std::cerr << "Error: failed to save image to \"" << m_imagePath.toStdString() << i << ".png\"" << std::endl;
+            }
+        }
+        if (!success) {
+            success = m_image.save(m_imagePath, "PNG");
+            if (success) {
+                std::cout << "Saved rendered image to \"" << m_imagePath.toStdString() << "\"" << std::endl;
+            } else {
+                std::cerr << "Error: failed to save image to \"" << m_imagePath.toStdString() << "\"" << std::endl;
+            }
+        }
+
+    }
+}
+
+void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
 
     // Note that we're passing `data` as a pointer (to its first element)
     // Recall from Lab 1 that you can access its elements like this: `data[i]`
@@ -49,12 +118,12 @@ void RayTracer::render(RGBA *imageData, const RayTraceScene &scene) {
     glm::mat4 inverseCamera = camera.getInverseViewMatrix();
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
-            if ((i * width + j) % 1000 == 0) {
-                std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
-            }
+            // if ((i * width + j) % 1000 == 0) {
+            //     std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
+            // }
 
             // if (i == 630 && j == 296) {
-            // if ((i > 267 && i < 306) && (j > 589 && j < 659)) {
+            // if ((i > 267 && i < 306) && (j > 589 && j < 659)) {t
 
                 //shoot ray through each pixel
                 float x = 2 * k * tan(thetaW / 2.0) * ((j + 0.5)/width - 0.5);
@@ -151,6 +220,30 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
     }
 
     return std::nullopt;
+}
+
+glm::mat4 RayTracer::myRotate(float angleDegrees, glm::vec3 axis) {
+    float angleRadians = glm::radians(angleDegrees);
+    axis = glm::normalize(axis);
+
+    float cosTheta = cos(angleRadians);
+    float sinTheta = sin(angleRadians);
+    float ux = axis[0];
+    float uy = axis[1];
+    float uz = axis[2];
+
+    glm::mat4 rotationMatrix(1.f);
+    rotationMatrix[0][0] = cosTheta + pow(ux, 2) * (1 - cosTheta);
+    rotationMatrix[0][1] = ux * uy * (1 - cosTheta) - uz * sinTheta;
+    rotationMatrix[0][2] = ux * uz * (1 - cosTheta) + uy * sinTheta;
+    rotationMatrix[1][0] = uy * ux * (1 - cosTheta) + uz * sinTheta;
+    rotationMatrix[1][1] = cosTheta + pow(uy, 2) * (1 - cosTheta);
+    rotationMatrix[1][2] = uy * uz * (1 - cosTheta) - ux * sinTheta;
+    rotationMatrix[2][0] = uz * ux * (1 - cosTheta) - uy * sinTheta;
+    rotationMatrix[2][1] = uz * uy * (1 - cosTheta) + ux * sinTheta;
+    rotationMatrix[2][2] = cosTheta + pow(uz, 2) * (1 - cosTheta);
+
+    return rotationMatrix;
 }
 
 
