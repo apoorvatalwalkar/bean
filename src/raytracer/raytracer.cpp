@@ -96,15 +96,6 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
 
         RenderShapeData curr = shapes[shape];
         std::optional<Intersection> result;
-        if (curr.primitive.type == PrimitiveType::PRIMITIVE_MESH) {
-            Mesh mesh {shapes[shape], p, d};
-            result = mesh.checkIntersection();
-        }
-
-        if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE){
-            Sphere sphere {shapes[shape], p, d};
-            result = sphere.checkIntersection();
-        }
 
         if (curr.primitive.type == PrimitiveType::PRIMITIVE_CUBE){
             Cube cube {shapes[shape], p, d};
@@ -112,11 +103,17 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
         }
 
         if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE ||
-                 curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER ||
-                 curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
+            curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER ||
+            curr.primitive.type == PrimitiveType::PRIMITIVE_CONE ||
+            curr.primitive.type == PrimitiveType::PRIMITIVE_MESH){
 
             Volume volume {shapes[shape], p, d};
             if(volume.checkIntersection()){
+
+                if (curr.primitive.type == PrimitiveType::PRIMITIVE_MESH) {
+                    Mesh mesh {shapes[shape], p, d};
+                    result = mesh.checkIntersection();
+                }
                 if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE){
                     Sphere sphere {shapes[shape], p, d};
                     result = sphere.checkIntersection();
