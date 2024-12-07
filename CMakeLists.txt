@@ -58,6 +58,8 @@ add_executable(${PROJECT_NAME}
   src/shapes/bvh.h
   src/utils/tiny_obj_loader.h
   src/shapes/mesh.h src/shapes/mesh.cpp
+  src/shapes/mesh_volume.h
+  src/shapes/mesh_volume.cpp
 
 
 )

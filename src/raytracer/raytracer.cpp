@@ -5,6 +5,7 @@
 #include "shapes/cylinder.h"
 #include "shapes/cone.h"
 #include "shapes/bvh.h"
+#include "shapes/mesh_volume.h"
 #include "shapes/mesh.h"
 #include <cmath>
 #include <optional>
@@ -102,23 +103,24 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
             result = cube.checkIntersection();
         }
 
+        if (curr.primitive.type == PrimitiveType::PRIMITIVE_MESH) {
+            MeshVolume meshVolume {shapes[shape], p, d};
+            if(meshVolume.checkIntersection()){
+                Mesh mesh {shapes[shape], p, d};
+                result = mesh.checkIntersection();
+            }
+        }
+
         if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE ||
             curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER ||
-            curr.primitive.type == PrimitiveType::PRIMITIVE_CONE ||
-            curr.primitive.type == PrimitiveType::PRIMITIVE_MESH){
+            curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
 
             Volume volume {shapes[shape], p, d};
             if(volume.checkIntersection()){
-
-                if (curr.primitive.type == PrimitiveType::PRIMITIVE_MESH) {
-                    Mesh mesh {shapes[shape], p, d};
-                    result = mesh.checkIntersection();
-                }
                 if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE){
                     Sphere sphere {shapes[shape], p, d};
                     result = sphere.checkIntersection();
                 }
-
                 if (curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER){
                     Cylinder cylinder {shapes[shape], p, d};
                     result = cylinder.checkIntersection();
