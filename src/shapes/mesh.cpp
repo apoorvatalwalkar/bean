@@ -7,6 +7,7 @@ Mesh::Mesh(RenderShapeData shape, glm::vec4 wEye, glm::vec4 wDirection){
     p = shape.inverse * wEye;
     d = shape.inverse * wDirection;
     load(shape.primitive.meshfile);
+    // load("/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/intersect/meshes/bean_meshfile.obj");
 }
 
 
@@ -85,14 +86,15 @@ void Mesh::load(const std::string& filepath) {
                     break;
                 }
                 }
-                if (idx.normal_index >= 0) {
-                    normal = glm::vec3(
-                        attrib.normals[3*size_t(idx.normal_index) + 0],
-                        attrib.normals[3*size_t(idx.normal_index) + 1],
-                        attrib.normals[3*size_t(idx.normal_index) + 2]);
-                } else {
-                    break;
-                }
+
+                // if (idx.normal_index >= 0) {
+                //     normal = glm::vec3(
+                //         attrib.normals[3*size_t(idx.normal_index) + 0],
+                //         attrib.normals[3*size_t(idx.normal_index) + 1],
+                //         attrib.normals[3*size_t(idx.normal_index) + 2]);
+                // } else {
+                //     break;
+                // }
                 // populate min and max coordinates for bvh bounding box calculation
                 if (vertex.x < minX) {
                     minX = vertex.x;
@@ -118,6 +120,7 @@ void Mesh::load(const std::string& filepath) {
             //     std::cout << v1.x << " " << v1.y << " " << v1.z << std::endl;
             //     std::cout << v2.x << " " << v2.y << " " << v2.z << std::endl;
             // }
+            normal = glm::normalize(glm::cross(v2-v0, v1-v0));
             m_triangles.push_back(Triangle{v0, v1, v2, normal});
             index_offset += fv;
         }

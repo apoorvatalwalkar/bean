@@ -17,21 +17,23 @@ RGBA PhongIllumination::toRGBA(const glm::vec4 &illumination) {
 PhongIllumination::PhongIllumination(std::vector<SceneLightData> &inLights,
                                      std::vector<RenderShapeData> inShapes,
                                      SceneGlobalData globalData,
-                                     RayTracer::Config inConfig){
+                                     RayTracer::Config inConfig,
+                                     float t){
     lights = inLights;
     shapes = inShapes;
     gd = globalData;
     config = inConfig;
+    time = t;
 }
 
 
 // Calculates the RGBA of a pixel from intersection infomation and globally-defined coefficients
-RGBA PhongIllumination::phong(glm::vec4  position,
+glm::vec4 PhongIllumination::phong(glm::vec4  position,
                               glm::vec3  normal,
                               glm::vec3  incidentRay,
                               float u, float v,
                               SceneMaterial  &material) {
-    return toRGBA(phongLogic(position, normal, incidentRay, material, u, v, 0));
+    return phongLogic(position, normal, incidentRay, material, u, v, 0);
 }
 
 glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
@@ -143,7 +145,7 @@ glm::vec4 PhongIllumination::reflection(glm::vec4  position,
     reflection = glm::normalize(reflection);
 
     glm::vec4 d = {reflection[0], reflection[1], reflection[2], 0};
-    std::optional<Intersection> result = checkIntersection(position + float(0.01) * d, d, shapes);
+    std::optional<Intersection> result = checkIntersection(position + float(0.01) * d, d, shapes, time);
 
     if(result.has_value()){
         Intersection intr = result.value();
@@ -165,7 +167,7 @@ bool PhongIllumination::checkShadow(glm::vec3 p, glm::vec3 d, float maxT){
     glm::vec4 p4 = {p[0], p[1], p[2], 1};
     glm::vec4 d4 = {d[0], d[1], d[2], 0};
 
-    std::optional<Intersection> result = checkIntersection(p4 + float(0.01) * d4, d4, shapes);
+    std::optional<Intersection> result = checkIntersection(p4 + float(0.01) * d4, d4, shapes, time);
     return !result.has_value() || result.value().t > maxT;
 }
 

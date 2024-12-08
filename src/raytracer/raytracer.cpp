@@ -13,11 +13,22 @@
 #include "utils/phongillumination.h"
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "utils/tiny_obj_loader.h"
+#include <random>
 
 
 RayTracer::RayTracer(Config config) :
     m_config(config)
 {}
+
+RGBA RayTracer::toRGBA(const glm::vec4 &illumination) {
+    // Task 1
+    float red = 255 * fmin(fmax(illumination[0], 0), 1);
+    float green = 255 * fmin(fmax(illumination[1], 0), 1);
+    float blue = 255 * fmin(fmax(illumination[2], 0), 1);
+
+    return RGBA{(std::uint8_t)red, (std::uint8_t)green, (std::uint8_t)blue, 255};
+}
+
 
 void RayTracer::render(RGBA *imageData, const RayTraceScene &scene) {
 
@@ -38,28 +49,30 @@ void RayTracer::render(RGBA *imageData, const RayTraceScene &scene) {
 
     int width = scene.width();
     int height = scene.height();
-    std::cout << width << " " << height << std::endl;
-
     float thetaH = camera.getHeightAngle();
     float thetaW = camera.getWidthAngle();
     int k = 1;
 
-    PhongIllumination ph {lights, shapes, globalData, m_config};
-
     glm::mat4 inverseCamera = camera.getInverseViewMatrix();
+
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
-            if ((i * width + j) % 1000 == 0) {
-                std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
-            }
+            // if ((i * width + j) % 1024 == 0) {
+            //     std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
+            // }
+            glm::vec4 pixelVal = glm::vec4(0.f, 0.f, 0.f, 1.f);
+            // supersampling
+            for (int a = 0; a < numSamples; a++) {
 
             // if (i == 630 && j == 296) {
-            // if ((i > 267 && i < 306) && (j > 589 && j < 659)) {
+            // if ((i > 277 && i < 296) && (j > 599 && j < 629)) {
 
                 //shoot ray through each pixel
                 float x = 2 * k * tan(thetaW / 2.0) * ((j + 0.5)/width - 0.5);
                 float y = 2 * k * tan(thetaH / 2.0) * ((height - i - 1 + 0.5)/height - 0.5);
                 float z = 0 - k;
+                float time = static_cast<float>(std::rand()) / RAND_MAX;
+                PhongIllumination ph {lights, shapes, globalData, m_config, time};
 
                 //eye + t * direction is the ray (in camera space)
                 glm::vec4 cEye = {0.0, 0.0, 0.0, 1.0};
@@ -69,28 +82,28 @@ void RayTracer::render(RGBA *imageData, const RayTraceScene &scene) {
                 glm::vec4 wDirection = inverseCamera * glm::normalize(cDirection);
 
                 //check if ray hits any object
-                std::optional<Intersection> result = checkIntersection(wEye, wDirection, shapes);
+                std::optional<Intersection> result = checkIntersection(wEye, wDirection, shapes, time);
 
                 if(result.has_value()){
                     Intersection intr = result.value();
 
                     glm::vec4 position = {wEye[0] + intr.t * wDirection[0], wEye[1] + intr.t * wDirection[1], wEye[2] + intr.t * wDirection[2], 1};
 
-                    RGBA pixelVal = ph.phong(
+                    pixelVal += ph.phong(
                         position,
                         intr.normal,
                         camPosition - position,
                         intr.u, intr.v,
                         intr.material);
-
-                    imageData[i * width + j] = pixelVal;
                 }
+            }
+            imageData[i * width + j] = toRGBA(pixelVal / float(numSamples));
             // }
         }
     }
 }
 
-std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vector<RenderShapeData> shapes){
+std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vector<RenderShapeData> shapes, float time){
     Intersection closest = {float(INT_MAX), glm::vec3(0.0), shapes[0].primitive.material, 0, 0, std::nullopt};
 
     for(int shape = shapes.size() - 1; shape >= 0; shape--){
@@ -111,15 +124,16 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
             }
         }
 
-        if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE ||
-            curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER ||
-            curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
 
-            Volume volume {shapes[shape], p, d};
-            if(volume.checkIntersection()){
+        // if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE ||
+        //     curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER ||
+        //     curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
+
+            // Volume volume {shapes[shape], p, d};
+            // if(volume.checkIntersection()){
                 if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE){
                     Sphere sphere {shapes[shape], p, d};
-                    result = sphere.checkIntersection();
+                    result = sphere.checkIntersection(time);
                 }
                 if (curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER){
                     Cylinder cylinder {shapes[shape], p, d};
@@ -127,10 +141,10 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
                 }
                 if (curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
                     Cone cone {shapes[shape], p, d};
-                    result = cone.checkIntersection();
+                    result = cone.checkIntersection(time);
                 }
-            }
-        }
+            // }
+        // }
 
         if(result.has_value() && result.value().t < closest.t && result.value().t >= 0){
             closest.t = result->t;

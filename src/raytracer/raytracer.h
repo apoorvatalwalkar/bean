@@ -48,6 +48,9 @@ private:
     RGBA sphere();
     RGBA cylinder();
     RGBA cone();
+    RGBA toRGBA(const glm::vec4 &illumination);
+
+    int numSamples = 10;
 };
 
 struct Intersection{
@@ -59,5 +62,5 @@ struct Intersection{
     std::optional<Image> map = std::nullopt;
 };
 
-std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vector<RenderShapeData> shapes);
+std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vector<RenderShapeData> shapes, float time);
 

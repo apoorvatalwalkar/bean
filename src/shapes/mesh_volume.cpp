@@ -9,9 +9,9 @@ MeshVolume::MeshVolume(RenderShapeData shape, glm::vec4 wEye, glm::vec4 wDirecti
 bool MeshVolume::checkIntersection(){
     float t1 = 0;
 
-    float xmax = 0.55, xmin = -0.55;
-    float ymax = 0.39, ymin = -0.39;
-    float zmax = 0.24, zmin = -0.27;
+    float xmax = 3.1, xmin = -3.8;
+    float ymax = 5.3, ymin = -0.1;
+    float zmax = 4.0, zmin = -6.5;
 
     //+ xy plane intersection
     t1 = (zmax - p[2]) / d[2];
