@@ -42,5 +42,6 @@ private:
                          SceneMaterial  &material,
                          int recur);
 
+    float calculateShadowFactor(SceneLightData light, glm::vec4 position);
 };
 
