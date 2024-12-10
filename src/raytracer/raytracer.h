@@ -23,6 +23,8 @@ public:
         int maxRecursiveDepth    = 4;
         bool onlyRenderNormals   = false;
         bool cameraMovement      = false;
+        bool enableSoftShadows   = false;
+        bool enableOcclusion     = false;
     };
 
 public:
@@ -53,7 +55,8 @@ private:
     glm::mat4 myRotate(float angleDegrees, glm::vec3 axis);
     RGBA toRGBA(const glm::vec4 &illumination);
 
-    int numSamples = 1;
+    int maxSamples = 20;
+    float sampleThreshold = 1.1f;
 };
 
 struct Intersection{

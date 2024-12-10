@@ -29,12 +29,9 @@ void RayTracer::render(const RayTraceScene &scene) {
     SceneCameraData currData = scene.cameraData;
 
     int frames = 1;
-    if(m_config.cameraMovement){ frames = 400;}
-    float theta = 1080.f;
-    float magnitude = pow(pow(original.pos[0], 2) + pow(original.pos[2], 2), 0.5);
-    float yval = original.pos[1];
+    if(m_config.cameraMovement){ frames = 160;}
 
-    for(int i = 360; i < frames; i++){
+    for(int i = 0; i < frames; i++){
         m_image.fill(Qt::black);
         RGBA *imageData = reinterpret_cast<RGBA *>(m_image.bits());
 
@@ -44,15 +41,18 @@ void RayTracer::render(const RayTraceScene &scene) {
         // camera movement code
         if(m_config.cameraMovement) {
 
-            float newX = sin(theta / 180.f) * magnitude;
-            float newZ = cos(theta / 180.f) * magnitude;
+            glm::vec3 up3 = glm::vec3(currData.up);
+            glm::vec3 look3 = glm::vec3(currData.look);
+            glm::vec3 perp = glm::cross(up3, look3);
 
-            newData.pos = glm::vec4(newX, yval, newZ, 1);
-            newData.look = -glm::normalize(newData.pos);
+            glm::mat4 rotationX = myRotate(-0.6, glm::vec3(0, 1, 0));
+            newData.look = rotationX * currData.look;
+            newData.up = rotationX * currData.up;
+
+            newData.pos = currData.pos - float(i / 180.f) * glm::normalize(currData.look) - float(i/180.f) * glm::vec4(perp, 0.f);
 
             newScene.cameraData = newData;
             currData = newData;
-            theta += 3.f;
         }
 
         // render scene
@@ -126,14 +126,16 @@ void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
 
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
-            // if ((i * width + j) % 1024 == 0) {
-            //     std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
-            // }
+            if ((i * width + j) % 1024 == 0) {
+                std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
+            }
             glm::vec4 pixelVal = glm::vec4(0.f, 0.f, 0.f, 1.f);
-            // supersampling
-            for (int a = 0; a < numSamples; a++) {
 
-            // if (i == 630 && j == 296) {
+            // supersampling
+            int numSamples = maxSamples;
+            glm::vec4 firstSample = glm::vec4(0.f, 0.f, 0.f, 1.f);
+            for (int l = 0; l < maxSamples; l++) {
+            // if (i == 733 && j == 50) {
             // if ((i > 277 && i < 296) && (j > 599 && j < 629)) {
 
                 //shoot ray through each pixel
@@ -155,17 +157,26 @@ void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
 
                 if(result.has_value()){
                     Intersection intr = result.value();
-
                     glm::vec4 position = {wEye[0] + intr.t * wDirection[0], wEye[1] + intr.t * wDirection[1], wEye[2] + intr.t * wDirection[2], 1};
-                    float occlusion = calcOcclusion(position, intr.normal, shapes, time);
-
-                    pixelVal += ph.phong(
+                    float occlusion = m_config.enableOcclusion ? calcOcclusion(position, intr.normal, shapes, time) : 1.0f;
+                    glm::vec4 sample = ph.phong(
                         position,
                         intr.normal,
                         camPosition - position,
                         intr.u, intr.v,
                         intr.material,
                         occlusion);
+
+                    if (l == 0) {
+                        firstSample = sample;
+                    }
+                    pixelVal += sample;
+                    if (l == 1 && glm::length(sample - firstSample) < sampleThreshold) {
+                        numSamples = 2;
+                        break;
+                    } /*else {
+                        std::cout << "supersampling" << std::endl;
+                    }*/
                 }
             }
             imageData[i * width + j] = toRGBA(pixelVal / float(numSamples));
@@ -196,12 +207,12 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
         }
 
 
-        if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE ||
-            curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER ||
-            curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
+        // if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE ||
+        //     curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER ||
+        //     curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
 
-            Volume volume {shapes[shape], p, d};
-            if(volume.checkIntersection()){
+            // Volume volume {shapes[shape], p, d};
+            // if(volume.checkIntersection()){
                 if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE){
                     Sphere sphere {shapes[shape], p, d};
                     result = sphere.checkIntersection(time);
@@ -214,8 +225,8 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
                     Cone cone {shapes[shape], p, d};
                     result = cone.checkIntersection(time);
                 }
-            }
-        }
+            // }
+        // }
 
         if(result.has_value() && result.value().t < closest.t && result.value().t >= 0){
             closest.t = result->t;
@@ -264,8 +275,7 @@ glm::vec3 RayTracer::hemisphereSample(glm::vec3 normal) {
 }
 
 float RayTracer::calcOcclusion(glm::vec4 surfacePos, glm::vec3 surfaceNormal, std::vector<RenderShapeData> shapes, float time) {
-    return 1.f;
-    int numSamples = 128;
+    int numSamples = 64;
     float occlusion = 0.0f;
 
     for (int i = 0; i < numSamples; ++i) {

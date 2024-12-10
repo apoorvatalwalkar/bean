@@ -45,6 +45,8 @@ glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
                                         int recur,
                                         float occlusion) {
 
+    bool isSoftShadows = true;
+
     normal = glm::normalize(normal);
     glm::vec3 iRay = {incidentRay[0], incidentRay[1], incidentRay[2]};
     iRay = glm::normalize(iRay);
@@ -67,34 +69,72 @@ glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
             diffuse = (1 - material.blend) * gd.kd * material.cDiffuse + material.blend * pix;
         }
 
-        //directional & point lights
-        if (light.type == LightType::LIGHT_DIRECTIONAL || light.type == LightType::LIGHT_POINT){
+        if (light.type == LightType::LIGHT_DIRECTIONAL) {
 
-            glm::vec3 toLight;
-            if(light.type == LightType::LIGHT_DIRECTIONAL){
-                toLight = -light.dir;
-            } else{
-                toLight = light.pos - position;
-            }
+            glm::vec3 toLight = -light.dir;
             float distance = glm::length(toLight);
             toLight = glm::normalize(toLight);
 
             float facing = glm::dot(toLight, normal);
             float maxT = float(INT_MAX);
-            if(light.type == LightType::LIGHT_POINT){ maxT = distance; }
-            if(facing > 0 && (!config.enableShadow || (config.enableShadow && checkShadow(position, toLight, maxT)))){
 
-                glm::vec3 reflection= 2 * facing * normal - toLight;
-                float close = glm::dot(iRay, glm::normalize(reflection));
+            if (isSoftShadows) {
+                float shadowFactor = calculateShadowFactor(light, position);
 
-                float fatt = 1;
-                if (light.type == LightType::LIGHT_POINT){
-                    float denominator = light.function[0] + distance * light.function[1] + pow(distance, 2) * light.function[2];
-                    fatt = fmin(1, 1.0 / denominator);
+                if (facing > 0 && shadowFactor > 0.0f) {
+                    glm::vec3 reflection = 2.f * facing * normal - toLight;
+                    float close = glm::dot(iRay, glm::normalize(reflection));
+
+                    illumination += light.color * shadowFactor *
+                                    (diffuse * facing + gd.ks * material.cSpecular * pow(close, material.shininess));
                 }
+            } else {
+                if(facing > 0){
+                    if (!config.enableShadow || (config.enableShadow && checkShadow(position, toLight, maxT))) {
 
-                illumination += fatt * light.color * (diffuse * facing + gd.ks * material.cSpecular * pow(close, material.shininess));
+                        glm::vec3 reflection = 2 * facing * normal - toLight;
+                        float close = glm::dot(iRay, glm::normalize(reflection));
+
+                        illumination += light.color * (diffuse * facing + gd.ks * material.cSpecular * pow(close, material.shininess));
+                    }
+                }
             }
+        }
+
+        if (light.type == LightType::LIGHT_POINT) {
+
+            glm::vec3 toLight = light.pos - position;
+            float distance = glm::length(toLight);
+            toLight = glm::normalize(toLight);
+
+            float facing = glm::dot(toLight, normal);
+
+            if (isSoftShadows) {
+                float shadowFactor = calculateShadowFactor(light, position);
+
+                if (facing > 0 && shadowFactor > 0.0f) {
+                    float denominator = light.function[0] + distance * light.function[1] + pow(distance, 2) * light.function[2];
+                    float fatt = fmin(1, 1.0f / denominator);
+
+                    glm::vec3 reflection = 2.f * facing * normal - toLight;
+                    float close = glm::dot(iRay, glm::normalize(reflection));
+
+                    illumination += fatt * light.color * shadowFactor *
+                                    (diffuse * facing + gd.ks * material.cSpecular * pow(close, material.shininess));
+                }
+            } else {
+                if (facing > 0 && (!config.enableShadow || (config.enableShadow && checkShadow(position, toLight, distance)))){
+                    glm::vec3 reflection= 2 * facing * normal - toLight;
+                    float close = glm::dot(iRay, glm::normalize(reflection));
+
+                    float denominator = light.function[0] + distance * light.function[1] + pow(distance, 2) * light.function[2];
+                    float fatt = fmin(1, 1.0 / denominator);
+
+                    illumination += fatt * light.color * (diffuse * facing + gd.ks * material.cSpecular * pow(close, material.shininess));
+
+                }
+            }
+
         }
 
         //spot light
@@ -108,24 +148,48 @@ glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
 
             float angle = acos(glm::dot(fromLight, toLight));
 
-            if(angle < light.angle && (!config.enableShadow || (config.enableShadow && checkShadow(position, toLight, distance)))){
+            if (isSoftShadows) {
+                float shadowFactor = calculateShadowFactor(light, position);
 
-                float facing = glm::dot(toLight, normal);
-                glm::vec3 reflection= 2 * facing * normal - toLight;
+                if (angle < light.angle && shadowFactor > 0.0f) {
+                    float facing = glm::dot(toLight, normal);
+                    glm::vec3 reflection = 2 * facing * normal - toLight;
+                    float close = glm::dot(iRay, glm::normalize(reflection));
 
-                float close = glm::dot(iRay, glm::normalize(reflection));
-                float denominator = light.function[0] + distance * light.function[1] + pow(distance, 2) * light.function[2];
-                float fatt = fmin(1, 1.0 / denominator);
+                    float denominator = light.function[0] + distance * light.function[1] + pow(distance, 2) * light.function[2];
+                    float fatt = fmin(1, 1.0 / denominator);
 
-                float falloff = 0;
-                float inner = light.angle - light.penumbra;
-                if (angle > inner){
-                    falloff = -2 * pow(((angle - inner) / light.penumbra), 3) + 3 * pow(((angle - inner) / light.penumbra), 2);
+                    float falloff = 0;
+                    float inner = light.angle - light.penumbra;
+                    if (angle > inner){
+                        falloff = -2 * pow(((angle - inner) / light.penumbra), 3) + 3 * pow(((angle - inner) / light.penumbra), 2);
+                    }
+
+                    illumination += fatt * light.color * shadowFactor * (1 - falloff) * (diffuse * facing + gd.ks * material.cSpecular * pow(close, material.shininess));
                 }
+            } else {
 
-                illumination+= fatt * light.color * (1-falloff) * (diffuse * facing +  gd.ks * material.cSpecular * pow(close, material.shininess));
+                if(angle < light.angle && (!config.enableShadow || (config.enableShadow && checkShadow(position, toLight, distance)))){
+
+                    float facing = glm::dot(toLight, normal);
+                    glm::vec3 reflection= 2 * facing * normal - toLight;
+
+                    float close = glm::dot(iRay, glm::normalize(reflection));
+                    float denominator = light.function[0] + distance * light.function[1] + pow(distance, 2) * light.function[2];
+                    float fatt = fmin(1, 1.0 / denominator);
+
+                    float falloff = 0;
+                    float inner = light.angle - light.penumbra;
+                    if (angle > inner){
+                        falloff = -2 * pow(((angle - inner) / light.penumbra), 3) + 3 * pow(((angle - inner) / light.penumbra), 2);
+                    }
+
+                    illumination+= fatt * light.color * (1-falloff) * (diffuse * facing +  gd.ks * material.cSpecular * pow(close, material.shininess));
+                }
             }
         }
+
+
     }
 
     if(config.enableShadow && glm::length(material.cReflective) > 0 && recur <= config.maxRecursiveDepth){
@@ -173,5 +237,71 @@ bool PhongIllumination::checkShadow(glm::vec3 p, glm::vec3 d, float maxT){
 
     std::optional<Intersection> result = checkIntersection(p4 + float(0.01) * d4, d4, shapes, time);
     return !result.has_value() || result.value().t > maxT;
+}
+
+float PhongIllumination::calculateShadowFactor(SceneLightData light, glm::vec4 position){
+    int sampleCount = 4;
+    float width;
+    float height;
+    if (light.type == LightType::LIGHT_DIRECTIONAL) {
+        width = 1e-6f;
+        height = 1e-6f;
+    } else {
+        width = 15.0f;
+        height = 15.0f;
+    }
+    int unshadowedCount = 0;
+
+    float threshold = 0.2f;
+
+    int sqrtSampleCount = 2;
+
+    for (int s = 0; s < sqrtSampleCount; s++) {
+        for (int d = 0; d < sqrtSampleCount; d++) {
+        float randomX = (float(std::rand()) / RAND_MAX) - 0.5f;
+        float randomY = (float(std::rand()) / RAND_MAX) - 0.5f;
+
+        float offsetX = (s + randomX) * (width / sqrtSampleCount);
+        float offsetY = (d + randomY) * (height / sqrtSampleCount);
+
+        if (light.type == LightType::LIGHT_DIRECTIONAL) {
+            glm::vec3 w = glm::normalize(-light.dir);
+            glm::vec3 u = glm::normalize(glm::cross(w, glm::vec3(0,1,0)));
+            glm::vec3 v = glm::normalize(glm::cross(w, u));
+
+            offsetX -= (width / 2);
+            offsetY -= (height / 2);
+
+            glm::vec3 sampleDir = glm::normalize(w + offsetX * u + offsetY * v);
+            float sampleDist = std::numeric_limits<float>::max();
+
+            bool inLight = true;
+            if (config.enableShadow) {
+                inLight = checkShadow(glm::vec3(position), sampleDir, sampleDist);
+            }
+
+            if (inLight) {
+                unshadowedCount++;
+            }
+        } else {
+            glm::vec3 sampleLightPos = glm::vec3(light.pos) + glm::vec3(offsetX, offsetY, 0.0f);
+            glm::vec3 sampleDir = glm::normalize(sampleLightPos - glm::vec3(position));
+            float sampleDist = glm::length(sampleLightPos - glm::vec3(position));
+
+            bool inLight = true;
+            if (config.enableShadow) {
+                inLight = checkShadow(glm::vec3(position), sampleDir, sampleDist);
+            }
+
+            if (inLight) {
+                unshadowedCount++;
+            }
+        }
+    }
+    }
+
+    float shadowFactor = float(unshadowedCount) / float(sampleCount);
+
+    return shadowFactor;
 }
 

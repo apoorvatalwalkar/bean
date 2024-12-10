@@ -59,6 +59,8 @@ int main(int argc, char *argv[])
     rtConfig.cameraMovement      = settings.value("Feature/camera-movement").toBool();
     rtConfig.maxRecursiveDepth   = settings.value("Settings/maximum-recursive-depth").toInt();
     rtConfig.onlyRenderNormals   = settings.value("Settings/only-render-normals").toBool();
+    rtConfig.enableSoftShadows   = settings.value("Settings/soft-shadows").toBool();
+    rtConfig.enableOcclusion     = settings.value("Settings/occlusion").toBool();
 
     RayTraceScene rtScene{ width, height, metaData };
     RayTracer raytracer{ rtConfig, image, oImagePath};
