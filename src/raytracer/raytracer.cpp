@@ -157,7 +157,7 @@ void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
                     Intersection intr = result.value();
 
                     glm::vec4 position = {wEye[0] + intr.t * wDirection[0], wEye[1] + intr.t * wDirection[1], wEye[2] + intr.t * wDirection[2], 1};
-                    float occlusion = calcOcclusion(position, intr.normal, shapes, time);
+                    float occlusion = m_config.enableOcclusion ? calcOcclusion(position, intr.normal, shapes, time) : 1.0f;
 
                     pixelVal += ph.phong(
                         position,
@@ -264,7 +264,7 @@ glm::vec3 RayTracer::hemisphereSample(glm::vec3 normal) {
 }
 
 float RayTracer::calcOcclusion(glm::vec4 surfacePos, glm::vec3 surfaceNormal, std::vector<RenderShapeData> shapes, float time) {
-    int numSamples = 128;
+    int numSamples = 64;
     float occlusion = 0.0f;
 
     for (int i = 0; i < numSamples; ++i) {
