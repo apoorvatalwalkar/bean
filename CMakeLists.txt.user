@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 14.0.1, 2024-12-09T22:04:12. -->
+<!-- Written by QtCreator 14.0.1, 2024-12-10T14:15:13. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -406,7 +406,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.project_bean</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">project_bean</value>
     <value type="bool" key="ProjectExplorer.RunConfiguration.Customized">true</value>
-    <value type="QString" key="RunConfiguration.Arguments">/Users/eleanorpark/csclasses/cs1230/bean/template_inis/intersect/dragon_mesh.ini</value>
+    <value type="QString" key="RunConfiguration.Arguments">/Users/eleanorpark/csclasses/cs1230/bean/template_inis/intersect/bean.ini</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory">/Users/eleanorpark/csclasses/cs1230/bean</value>

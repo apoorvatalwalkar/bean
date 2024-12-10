@@ -20,7 +20,7 @@ public:
         bool enableSuperSample   = false;
         bool enableAcceleration  = false;
         bool enableDepthOfField  = false;
-        int maxRecursiveDepth    = 4;
+        int maxRecursiveDepth    = 2;
         bool onlyRenderNormals   = false;
         bool cameraMovement      = false;
         bool enableSoftShadows   = false;
@@ -55,11 +55,11 @@ private:
     glm::mat4 myRotate(float angleDegrees, glm::vec3 axis);
     RGBA toRGBA(const glm::vec4 &illumination);
 
-    int maxSamples = 20;
+    int maxSamples = 1;
     float sampleThreshold = 1.1f;
 };
 
-struct Intersection{
+struct Intersection {
     float t = float(INT_MAX);
     glm::vec3 normal = glm::vec3(0.0);
     SceneMaterial material = SceneMaterial();
