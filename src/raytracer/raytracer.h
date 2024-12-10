@@ -23,6 +23,7 @@ public:
         int maxRecursiveDepth    = 4;
         bool onlyRenderNormals   = false;
         bool cameraMovement      = false;
+        bool enableSoftShadows   = false;
     };
 
 public:
