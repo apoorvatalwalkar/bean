@@ -131,9 +131,11 @@ void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
             // }
             glm::vec4 pixelVal = glm::vec4(0.f, 0.f, 0.f, 1.f);
             // supersampling
-            for (int a = 0; a < numSamples; a++) {
 
-            // if (i == 630 && j == 296) {
+            int numSamples = maxSamples;
+            glm::vec4 firstSample = glm::vec4(0.f, 0.f, 0.f, 1.f);
+            for (int l = 0; l < maxSamples; l++) {
+            // if (i == 733 && j == 50) {
             // if ((i > 277 && i < 296) && (j > 599 && j < 629)) {
 
                 //shoot ray through each pixel
@@ -155,17 +157,26 @@ void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
 
                 if(result.has_value()){
                     Intersection intr = result.value();
-
                     glm::vec4 position = {wEye[0] + intr.t * wDirection[0], wEye[1] + intr.t * wDirection[1], wEye[2] + intr.t * wDirection[2], 1};
                     float occlusion = m_config.enableOcclusion ? calcOcclusion(position, intr.normal, shapes, time) : 1.0f;
-
-                    pixelVal += ph.phong(
+                    glm::vec4 sample = ph.phong(
                         position,
                         intr.normal,
                         camPosition - position,
                         intr.u, intr.v,
                         intr.material,
                         occlusion);
+
+                    if (l == 0) {
+                        firstSample = sample;
+                    }
+                    pixelVal += sample;
+                    if (l == 1 && glm::length(sample - firstSample) < sampleThreshold) {
+                        numSamples = 2;
+                        break;
+                    } else {
+                        std::cout << "supersampling" << std::endl;
+                    }
                 }
             }
             imageData[i * width + j] = toRGBA(pixelVal / float(numSamples));
