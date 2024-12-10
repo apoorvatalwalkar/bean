@@ -8,7 +8,6 @@ public:
     Volume(RenderShapeData shape, glm::vec4 wEye, glm::vec4 wDirection);
     bool checkIntersection();
 private:
-    RenderShapeData volume;
     glm::vec4 p;
     glm::vec4 d;
 };

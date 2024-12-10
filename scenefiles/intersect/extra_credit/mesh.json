@@ -25,16 +25,17 @@
     {
       "groups": [
         {
-          "scale": [2.5, 2.5, 2.5],
-          "rotate": [0.0, 1.0, 0.0, -50.0],
+          "translate": [0.0, -0.5, 0.0],
+          "scale": [0.1, 0.1, 0.1],
+          "rotate": [0.0, 1.0, 0.0, 48.0],
           "primitives": [
             {
               "type": "mesh",
-              "ambient": [0.4, 0.4, 0.4],
-              "meshFile": "meshes/dragon.obj",
-              "diffuse": [0.43, 0.73, 0.99],
+              "ambient": [0.2, 0.2, 0.2],
+              "meshFile": "meshes/bean_meshfile.obj",
+              "diffuse": [0.4, 0.4, 0.4],
               "specular": [1.0, 1.0, 1.0],
-              "shininess": 30.0
+              "shininess": 95.0
             }
           ]
         }

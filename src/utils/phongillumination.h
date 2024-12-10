@@ -12,9 +12,10 @@ public:
     PhongIllumination(std::vector<SceneLightData> &inLights,
                       std::vector<RenderShapeData> inShapes,
                       SceneGlobalData gd,
-                      RayTracer::Config inConfig);
+                      RayTracer::Config inConfig,
+                      float time);
 
-    RGBA phong(glm::vec4  position,
+    glm::vec4 phong(glm::vec4  position,
                glm::vec3  normal,
                glm::vec3  incdidentRay,
                float u, float v,
@@ -27,6 +28,7 @@ private:
     std::vector<RenderShapeData> shapes;
     SceneGlobalData gd;
     int maxDepth;
+    float time;
 
     RGBA toRGBA(const glm::vec4 &illumination);
     glm::vec4 phongLogic(glm::vec4  position,

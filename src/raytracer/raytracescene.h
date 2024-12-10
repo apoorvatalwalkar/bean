@@ -30,9 +30,10 @@ public:
     const std::vector<SceneLightData>& getLights() const;
     const std::vector<RenderShapeData>& getShapes() const;
 
+    SceneCameraData cameraData;
+
 private:
     int w, h;
     RenderData data;
     SceneGlobalData globalData;
-    SceneCameraData cameraData;
 };

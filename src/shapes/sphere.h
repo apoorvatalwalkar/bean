@@ -10,7 +10,7 @@
 class Sphere {
 public:
     Sphere(RenderShapeData shape, glm::vec4 wEye, glm::vec4 wDirection);
-    std::optional<Intersection> checkIntersection();
+    std::optional<Intersection> checkIntersection(float time);
 private:
     RenderShapeData sphereShape;
     glm::vec4 p;
@@ -20,6 +20,10 @@ private:
     std::vector<SceneLightData> lights;
     std::vector<RenderShapeData> shapes;
     glm::mat4 directionToCamera;
+
+    // for defining start and end of sphere movement
+    glm::vec4 centerStart = glm::vec4(0.f, 0.f, 0.f, 1.f);
+    glm::vec4 centerEnd = glm::vec4 (0.f, 0.f, 0.3f, 1.f);
 };
 
 #endif // SPHERE_H

@@ -1,1 +1,12 @@
-build
+# build files
+build/
+
+# MacOS & clang files
+**/.DS_Store
+.qtc_clangd/
+
+# Visual Studio Code files
+.vscode
+
+# Required for Qt Creator w/ CMake
+CMakeLists.txt.user*

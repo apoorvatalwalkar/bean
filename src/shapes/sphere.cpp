@@ -8,20 +8,23 @@ Sphere::Sphere(RenderShapeData shape, glm::vec4 wEye, glm::vec4 wDirection){
     d = shape.inverse * wDirection;
 }
 
-std::optional<Intersection> Sphere::checkIntersection(){
+std::optional<Intersection> Sphere::checkIntersection(float time) {
+    glm::vec4 newCenter = centerStart + (centerEnd - centerStart) * time;
+    // calculate relative camera position for the intersection after the sphere moves
+    glm::vec4 newPos = p - newCenter;
 
     Intersection intr = {.t = float(INT_MAX), .u = float(INT_MAX), .v = float(INT_MAX)};
 
-    float px2 = p[0] * p[0];
-    float py2 = p[1] * p[1];
-    float pz2 = p[2] * p[2];
+    float px2 = newPos[0] * newPos[0];
+    float py2 = newPos[1] * newPos[1];
+    float pz2 = newPos[2] * newPos[2];
 
     float dx2 = d[0] * d[0];
     float dy2 = d[1] * d[1];
     float dz2 = d[2] * d[2];
 
     float A = dx2 + dy2 + dz2;
-    float B = 2 * (p[0] * d[0] + p[1] * d[1] + p[2] * d[2]);
+    float B = 2 * (p[0] * d[0] + newPos[1] * d[1] + newPos[2] * d[2]);
     float C = px2 + py2 + pz2 - 0.25;
 
     float discriminant = (pow(B, 2) - 4 * A * C);
