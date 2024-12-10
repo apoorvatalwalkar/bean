@@ -30,8 +30,9 @@ RGBA PhongIllumination::phong(glm::vec4  position,
                               glm::vec3  normal,
                               glm::vec3  incidentRay,
                               float u, float v,
-                              SceneMaterial  &material) {
-    return toRGBA(phongLogic(position, normal, incidentRay, material, u, v, 0));
+                              SceneMaterial  &material,
+                              float occlusion) {
+    return toRGBA(phongLogic(position, normal, incidentRay, material, u, v, 0, occlusion));
 }
 
 glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
@@ -39,20 +40,21 @@ glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
                                         glm::vec3  incidentRay,
                                         SceneMaterial  &material,
                                         float u, float v,
-                                        int recur) {
+                                        int recur,
+                                        float occlusion) {
 
     normal = glm::normalize(normal);
     glm::vec3 iRay = {incidentRay[0], incidentRay[1], incidentRay[2]};
     iRay = glm::normalize(iRay);
 
     glm::vec4 illumination(0, 0, 0, 1);
-    illumination += gd.ka * material.cAmbient;
+    illumination += gd.ka * material.cAmbient * occlusion;
 
     for (const SceneLightData &light : lights) {
 
         glm::vec4 diffuse = gd.kd * material.cDiffuse;
         //texture
-        if(config.enableTextureMap && material.map.has_value() && u < float(INT_MAX) && v < float(INT_MAX) && material.blend > 0){
+        if (config.enableTextureMap && material.map.has_value() && u < float(INT_MAX) && v < float(INT_MAX) && material.blend > 0) {
             Image map =  material.map.value();
             int c = int(floor(u * map.width * material.textureMap.repeatU)) % map.width;
             int r = int((1 - v) * material.textureMap.repeatV * map.height) % map.height;
@@ -125,7 +127,7 @@ glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
     }
 
     if(config.enableShadow && glm::length(material.cReflective) > 0 && recur <= config.maxRecursiveDepth){
-        illumination += gd.ks * material.cReflective * reflection(position, normal, iRay, material, recur);
+        illumination += gd.ks * material.cReflective * reflection(position, normal, iRay, material, recur, occlusion);
     }
 
     return illumination;
@@ -135,7 +137,8 @@ glm::vec4 PhongIllumination::reflection(glm::vec4  position,
                                         glm::vec3  normal,
                                         glm::vec3  incidentRay,
                                         SceneMaterial  &material,
-                                        int recur) {
+                                        int recur,
+                                        float occlusion) {
 
     incidentRay = glm::normalize(incidentRay);
     normal = glm::normalize(normal);
@@ -155,7 +158,8 @@ glm::vec4 PhongIllumination::reflection(glm::vec4  position,
             reflection,
             intr.material,
             intr.u, intr.v,
-            recur + 1);
+            recur + 1,
+            occlusion);
     }
     return {0, 0, 0, 1};
 }

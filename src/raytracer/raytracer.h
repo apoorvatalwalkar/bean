@@ -48,6 +48,9 @@ private:
     RGBA sphere();
     RGBA cylinder();
     RGBA cone();
+    float calcOcclusion(glm::vec4 surfacePos, glm::vec3 surfaceNormal, std::vector<RenderShapeData> shapes);
+    glm::vec3 hemisphereSample(glm::vec3 surfaceNormal);
+
 };
 
 struct Intersection{

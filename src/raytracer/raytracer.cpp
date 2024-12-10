@@ -75,12 +75,15 @@ void RayTracer::render(RGBA *imageData, const RayTraceScene &scene) {
 
                     glm::vec4 position = {wEye[0] + intr.t * wDirection[0], wEye[1] + intr.t * wDirection[1], wEye[2] + intr.t * wDirection[2], 1};
 
+                    float occlusion = calcOcclusion(position, intr.normal, shapes);
+
                     RGBA pixelVal = ph.phong(
                         position,
                         intr.normal,
                         camPosition - position,
                         intr.u, intr.v,
-                        intr.material);
+                        intr.material,
+                        occlusion);
 
                     imageData[i * width + j] = pixelVal;
                 }
@@ -152,6 +155,46 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
     }
 
     return std::nullopt;
+}
+
+glm::vec3 RayTracer::hemisphereSample(glm::vec3 normal) {
+    float theta = 2 * M_PI * ((float)rand()) / RAND_MAX;
+    float phi = acos(2 * ((float)rand()) / RAND_MAX - 1);
+    glm::vec3 coords = glm::vec3(sin(phi) * cos(theta),
+                                 sin(phi) * sin(theta),
+                                 cos(phi));
+
+    glm::vec3 up = glm::vec3(0, 1, 0);
+    if (std::abs(dot(normal, up)) > 0.99f) {
+        up = glm::vec3(1, 0, 0);
+    }
+
+    glm::vec3 right = normalize(cross(normal, up));
+    glm::vec3 forward = normalize(cross(right, normal));
+
+    glm::vec3 raydir = glm::vec3(
+        coords.x * right.x + coords.y * forward.x + coords.z * normal.x,
+        coords.x * right.y + coords.y * forward.y + coords.z * normal.y,
+        coords.x * right.z + coords.y * forward.z + coords.z * normal.z
+    );
+
+
+    return glm::normalize(raydir);
+}
+
+float RayTracer::calcOcclusion(glm::vec4 surfacePos, glm::vec3 surfaceNormal, std::vector<RenderShapeData> shapes) {
+    int numSamples = 128;
+    float occlusion = 0.0f;
+
+    for (int i = 0; i < numSamples; ++i) {
+        glm::vec4 d = glm::vec4(hemisphereSample(surfaceNormal), 0.0f);
+        std::optional<Intersection> result = checkIntersection(surfacePos + 0.01f * d, d, shapes);
+        if (!result.has_value()) {
+            occlusion += 1.0f;
+        }
+    }
+
+    return occlusion / numSamples;
 }
 
 

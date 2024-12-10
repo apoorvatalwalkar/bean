@@ -18,7 +18,8 @@ public:
                glm::vec3  normal,
                glm::vec3  incdidentRay,
                float u, float v,
-               SceneMaterial  &material);
+               SceneMaterial  &material,
+               float occlusion);
 
 private:
     RayTracer::Config config;
@@ -33,14 +34,16 @@ private:
                          glm::vec3  incidentRay,
                          SceneMaterial  &material,
                          float u, float v,
-                         int recur);
+                         int recur,
+                         float occlusion);
     bool checkShadow(glm::vec3 p, glm::vec3 d, float maxT);
 
     glm::vec4 reflection(glm::vec4  position,
                          glm::vec3  normal,
                          glm::vec3  incidentRay,
                          SceneMaterial  &material,
-                         int recur);
+                         int recur,
+                         float occlusion);
 
 };
 
