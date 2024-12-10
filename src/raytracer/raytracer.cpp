@@ -175,7 +175,7 @@ void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
                         numSamples = 2;
                         break;
                     } else {
-                        std::cout << "supersampling" << std::endl;
+                        // std::cout << "supersampling" << std::endl;
                     }
                 }
             }
