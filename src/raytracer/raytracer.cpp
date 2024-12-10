@@ -207,12 +207,12 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
         }
 
 
-        // if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE ||
-        //     curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER ||
-        //     curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
+        if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE ||
+            curr.primitive.type == PrimitiveType::PRIMITIVE_CYLINDER ||
+            curr.primitive.type == PrimitiveType::PRIMITIVE_CONE){
 
-            // Volume volume {shapes[shape], p, d};
-            // if(volume.checkIntersection()){
+            Volume volume {shapes[shape], p, d};
+            if(volume.checkIntersection()){
                 if (curr.primitive.type == PrimitiveType::PRIMITIVE_SPHERE){
                     Sphere sphere {shapes[shape], p, d};
                     result = sphere.checkIntersection(time);
@@ -225,8 +225,8 @@ std::optional<Intersection> checkIntersection(glm::vec4 p, glm::vec4 d, std::vec
                     Cone cone {shapes[shape], p, d};
                     result = cone.checkIntersection(time);
                 }
-            // }
-        // }
+            }
+        }
 
         if(result.has_value() && result.value().t < closest.t && result.value().t >= 0){
             closest.t = result->t;

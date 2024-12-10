@@ -15,20 +15,58 @@
   "groups": [
     {
       "name": "reflectiveFront",
-      "translate": [0, 3, 6],
+      "translate": [0, 5, 16],
       "rotate": [0, 1, 0, 0],
-      "scale": [20, 10, 1],
+      "scale": [32, 20, 1],
       "primitives": [
         {
           "type": "cube",
           "diffuse": [0.8, 0.8, 0.8],
           "specular": [1, 1, 1],
           "ambient": [0.2, 0.2, 0.2],
-          "shininess": 98.0,
+          "shininess": 1.0,
           "blend": 1.0,
-          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/bean_building_texture.png",
-          "textureU": 2.0,
-          "textureV": 2.0
+          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/buildings.png",
+          "textureU": 1.0,
+          "textureV": 1.0
+        }
+      ]
+    },
+    {
+      "name": "reflectiveSide1",
+      "translate": [12, 5, 0],
+      "rotate": [0, 1, 0, 90],
+      "scale": [32, 20, 1],
+      "primitives": [
+        {
+          "type": "cube",
+          "diffuse": [0.8, 0.8, 0.8],
+          "specular": [1, 1, 1],
+          "ambient": [0.2, 0.2, 0.2],
+          "shininess": 1.0,
+          "blend": 1.0,
+          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/buildings.png",
+          "textureU": 1.0,
+          "textureV": 1.0
+        }
+      ]
+    },
+    {
+      "name": "reflectiveSide2",
+      "translate": [-12, 5, 0],
+      "rotate": [0, 1, 0, 90],
+      "scale": [32, 20, 1],
+      "primitives": [
+        {
+          "type": "cube",
+          "diffuse": [0.8, 0.8, 0.8],
+          "specular": [1, 1, 1],
+          "ambient": [0.2, 0.2, 0.2],
+          "shininess": 1.0,
+          "blend": 1.0,
+          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/buildings.png",
+          "textureU": 1.0,
+          "textureV": 1.0
         }
       ]
     },
@@ -166,20 +204,19 @@
     },
     {
       "name": "City/BG",
-      "translate": [0, 4.5, -5],
+      "translate": [0, 6, -16],
       "rotate": [0, 1, 0, 0],
-      "scale": [20, 10, 1],
+      "scale": [25, 15, 1],
       "primitives": [
         {
           "type": "cube",
           "diffuse": [1, 1, 1],
           "specular": [1, 1, 1],
-          "ambient": [1, 0.71, 0.74],
           "shininess": 1,
           "blend": 1.0,
-          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/bean_building_texture.png",
-          "textureU": 2.0,
-          "textureV": 2.0
+          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/buildings.png",
+          "textureU": 1,
+          "textureV": 1
         }
       ]
     },
@@ -187,18 +224,17 @@
       "name": "Floor",
       "translate": [0, -0.5, 0],
       "rotate": [0, 1, 0, 0],
-      "scale": [10, 0.1, 10],
+      "scale": [32, 0.1, 32],
       "primitives": [
         {
           "type": "cube",
           "diffuse": [1, 1, 1],
           "specular": [1, 1, 1],
-          "ambient": [0.14, 0.84, 0.27],
           "shininess": 1,
           "blend": 1.0,
           "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/ground_texture.jpg",
-          "textureU": 2.0,
-          "textureV": 2.0
+          "textureU": 9.0,
+          "textureV": 9.0
         }
       ]
     },
@@ -206,12 +242,13 @@
       "name": "Lights",
       "lights": [
         {
-          "type": "directional",
-          "color": [1, 1, 1],
-          "direction": [0, -1, 0]
+          "type": "point",
+          "attenuationCoeff": [1, 0.0, 0.0],
+          "color": [0.8, 0.77, 0.75],
+          "direction": [0, 0, 0]
         }
       ],
-      "translate": [0.0, 5.0, 0.0],
+      "translate": [0.0, 30.0, 0.0],
       "rotate": [0, 1, 30, 79]
     },
     {
@@ -223,7 +260,7 @@
           "type": "mesh",
           "reflective": [0.9, 0.9, 0.9],
           "ambient": [0.2, 0.2, 0.2],
-          "meshFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/intersect/meshes/simplify_bean.obj",
+          "meshFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/intersect/meshes/bean.obj",
           "diffuse": [0.8, 0.8, 0.8],
           "specular": [1, 1, 1],
           "shininess": 95.0
