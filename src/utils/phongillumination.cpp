@@ -240,18 +240,26 @@ bool PhongIllumination::checkShadow(glm::vec3 p, glm::vec3 d, float maxT){
 }
 
 float PhongIllumination::calculateShadowFactor(SceneLightData light, glm::vec4 position){
-    int sampleCount = 16;
+    int sampleCount = 4;
     float width = 15.0f;
     float height = 15.0f;
     int unshadowedCount = 0;
+    int shadowedCount = 0;
 
+    float threshold = 0.2f;
 
-    for (int s = 0; s < sampleCount; s++) {
+    int sqrtSampleCount = 2;
+
+    for (int s = 0; s < sqrtSampleCount; s++) {
+        for (int d = 0; d < sqrtSampleCount; d++) {
         float randomX = (float(std::rand()) / RAND_MAX) - 0.5f;
         float randomY = (float(std::rand()) / RAND_MAX) - 0.5f;
 
-        float offsetX = randomX * width;
-        float offsetY = randomY * height;
+        // float offsetX = randomX * width;
+        // float offsetY = randomY * height;
+
+        float offsetX = (s + randomX) * (width / sqrtSampleCount);
+        float offsetY = (d + randomY) * (height / sqrtSampleCount);
 
         glm::vec3 sampleLightPos = glm::vec3(light.pos) + glm::vec3(offsetX, offsetY, 0.0f);
         glm::vec3 sampleDir = glm::normalize(sampleLightPos - glm::vec3(position));
@@ -266,9 +274,12 @@ float PhongIllumination::calculateShadowFactor(SceneLightData light, glm::vec4 p
             unshadowedCount++;
         }
     }
+    }
 
     float shadowFactor = float(unshadowedCount) / float(sampleCount);
 
-    return shadowFactor;
+    float bias = 2.0f;
+
+    return glm::pow(shadowFactor, bias);
 }
 
