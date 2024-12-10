@@ -17,21 +17,24 @@ RGBA PhongIllumination::toRGBA(const glm::vec4 &illumination) {
 PhongIllumination::PhongIllumination(std::vector<SceneLightData> &inLights,
                                      std::vector<RenderShapeData> inShapes,
                                      SceneGlobalData globalData,
-                                     RayTracer::Config inConfig){
+                                     RayTracer::Config inConfig,
+                                     float t){
     lights = inLights;
     shapes = inShapes;
     gd = globalData;
     config = inConfig;
+    time = t;
 }
 
 
 // Calculates the RGBA of a pixel from intersection infomation and globally-defined coefficients
-RGBA PhongIllumination::phong(glm::vec4  position,
+glm::vec4 PhongIllumination::phong(glm::vec4  position,
                               glm::vec3  normal,
                               glm::vec3  incidentRay,
                               float u, float v,
-                              SceneMaterial  &material) {
-    return toRGBA(phongLogic(position, normal, incidentRay, material, u, v, 0));
+                              SceneMaterial  &material,
+                              float occlusion) {
+    return phongLogic(position, normal, incidentRay, material, u, v, 0, occlusion);
 }
 
 glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
@@ -39,7 +42,8 @@ glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
                                         glm::vec3  incidentRay,
                                         SceneMaterial  &material,
                                         float u, float v,
-                                        int recur) {
+                                        int recur,
+                                        float occlusion) {
 
     bool isSoftShadows = true;
 
@@ -48,13 +52,13 @@ glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
     iRay = glm::normalize(iRay);
 
     glm::vec4 illumination(0, 0, 0, 1);
-    illumination += gd.ka * material.cAmbient;
+    illumination += gd.ka * material.cAmbient * occlusion;
 
     for (const SceneLightData &light : lights) {
 
         glm::vec4 diffuse = gd.kd * material.cDiffuse;
         //texture
-        if(config.enableTextureMap && material.map.has_value() && u < float(INT_MAX) && v < float(INT_MAX) && material.blend > 0){
+        if (config.enableTextureMap && material.map.has_value() && u < float(INT_MAX) && v < float(INT_MAX) && material.blend > 0) {
             Image map =  material.map.value();
             int c = int(floor(u * map.width * material.textureMap.repeatU)) % map.width;
             int r = int((1 - v) * material.textureMap.repeatV * map.height) % map.height;
@@ -189,7 +193,7 @@ glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
     }
 
     if(config.enableShadow && glm::length(material.cReflective) > 0 && recur <= config.maxRecursiveDepth){
-        illumination += gd.ks * material.cReflective * reflection(position, normal, iRay, material, recur);
+        illumination += gd.ks * material.cReflective * reflection(position, normal, iRay, material, recur, occlusion);
     }
 
     return illumination;
@@ -199,7 +203,8 @@ glm::vec4 PhongIllumination::reflection(glm::vec4  position,
                                         glm::vec3  normal,
                                         glm::vec3  incidentRay,
                                         SceneMaterial  &material,
-                                        int recur) {
+                                        int recur,
+                                        float occlusion) {
 
     incidentRay = glm::normalize(incidentRay);
     normal = glm::normalize(normal);
@@ -207,7 +212,7 @@ glm::vec4 PhongIllumination::reflection(glm::vec4  position,
     reflection = glm::normalize(reflection);
 
     glm::vec4 d = {reflection[0], reflection[1], reflection[2], 0};
-    std::optional<Intersection> result = checkIntersection(position + float(0.01) * d, d, shapes);
+    std::optional<Intersection> result = checkIntersection(position + float(0.01) * d, d, shapes, time);
 
     if(result.has_value()){
         Intersection intr = result.value();
@@ -219,7 +224,8 @@ glm::vec4 PhongIllumination::reflection(glm::vec4  position,
             reflection,
             intr.material,
             intr.u, intr.v,
-            recur + 1);
+            recur + 1,
+            occlusion);
     }
     return {0, 0, 0, 1};
 }
@@ -229,7 +235,7 @@ bool PhongIllumination::checkShadow(glm::vec3 p, glm::vec3 d, float maxT){
     glm::vec4 p4 = {p[0], p[1], p[2], 1};
     glm::vec4 d4 = {d[0], d[1], d[2], 0};
 
-    std::optional<Intersection> result = checkIntersection(p4 + float(0.01) * d4, d4, shapes);
+    std::optional<Intersection> result = checkIntersection(p4 + float(0.01) * d4, d4, shapes, time);
     return !result.has_value() || result.value().t > maxT;
 }
 

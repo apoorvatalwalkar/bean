@@ -7,6 +7,7 @@ Mesh::Mesh(RenderShapeData shape, glm::vec4 wEye, glm::vec4 wDirection){
     p = shape.inverse * wEye;
     d = shape.inverse * wDirection;
     load(shape.primitive.meshfile);
+    // load("/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/intersect/meshes/bean_meshfile.obj");
 }
 
 
@@ -67,36 +68,51 @@ void Mesh::load(const std::string& filepath) {
             // Loop over vertices in the face.
             for (size_t v = 0; v < 3; v++) {
                 tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
+                glm::vec3 vertex = glm::vec3(
+                    attrib.vertices[3 * size_t(idx.vertex_index) + 0],
+                    attrib.vertices[3 * size_t(idx.vertex_index) + 1],
+                    attrib.vertices[3 * size_t(idx.vertex_index) + 2]);
                 switch (v) {
                 case 0: {
-                    v0 = glm::vec3(
-                            attrib.vertices[3 * size_t(idx.vertex_index) + 0],
-                            attrib.vertices[3 * size_t(idx.vertex_index) + 1],
-                            attrib.vertices[3 * size_t(idx.vertex_index) + 2]);
+                    v0 = vertex;
                     break;
                 }
                 case 1: {
-                    v1 = glm::vec3(
-                        attrib.vertices[3 * size_t(idx.vertex_index) + 0],
-                        attrib.vertices[3 * size_t(idx.vertex_index) + 1],
-                        attrib.vertices[3 * size_t(idx.vertex_index) + 2]);
+                    v1 = vertex;
                     break;
                 }
                 case 2: {
-                    v2 = glm::vec3(
-                        attrib.vertices[3 * size_t(idx.vertex_index) + 0],
-                        attrib.vertices[3 * size_t(idx.vertex_index) + 1],
-                        attrib.vertices[3 * size_t(idx.vertex_index) + 2]);
+                    v2 = vertex;
                     break;
                 }
                 }
-                if (idx.normal_index >= 0) {
-                    normal = glm::vec3(
-                        attrib.normals[3*size_t(idx.normal_index) + 0],
-                        attrib.normals[3*size_t(idx.normal_index) + 1],
-                        attrib.normals[3*size_t(idx.normal_index) + 2]);
-                } else {
-                    break;
+
+                // if (idx.normal_index >= 0) {
+                //     normal = glm::vec3(
+                //         attrib.normals[3*size_t(idx.normal_index) + 0],
+                //         attrib.normals[3*size_t(idx.normal_index) + 1],
+                //         attrib.normals[3*size_t(idx.normal_index) + 2]);
+                // } else {
+                //     break;
+                // }
+                // populate min and max coordinates for bvh bounding box calculation
+                if (vertex.x < minX) {
+                    minX = vertex.x;
+                }
+                if (vertex.x > maxX) {
+                    maxX = vertex.x;
+                }
+                if (vertex.y < minY) {
+                    minY = vertex.y;
+                }
+                if (vertex.y > maxY) {
+                    maxY = vertex.y;
+                }
+                if (vertex.z < minZ) {
+                    minZ = vertex.z;
+                }
+                if (vertex.z > maxZ) {
+                    maxZ = vertex.z;
                 }
             }
             // if (f == 0) {
@@ -104,6 +120,7 @@ void Mesh::load(const std::string& filepath) {
             //     std::cout << v1.x << " " << v1.y << " " << v1.z << std::endl;
             //     std::cout << v2.x << " " << v2.y << " " << v2.z << std::endl;
             // }
+            normal = glm::normalize(glm::cross(v2-v0, v1-v0));
             m_triangles.push_back(Triangle{v0, v1, v2, normal});
             index_offset += fv;
         }

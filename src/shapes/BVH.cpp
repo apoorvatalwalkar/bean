@@ -1,11 +1,7 @@
-#include "utils/rgba.h"
 #include "bvh.h"
 #include "utils/sceneparser.h"
-#include "utils/phongillumination.h"
-#include "raytracer/raytracescene.h"
 
 Volume::Volume(RenderShapeData shape, glm::vec4 wEye, glm::vec4 wDirection){
-    volume = shape;
     p = shape.inverse * wEye;
     d = shape.inverse * wDirection;
 }
