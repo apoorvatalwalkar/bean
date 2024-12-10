@@ -241,10 +241,16 @@ bool PhongIllumination::checkShadow(glm::vec3 p, glm::vec3 d, float maxT){
 
 float PhongIllumination::calculateShadowFactor(SceneLightData light, glm::vec4 position){
     int sampleCount = 4;
-    float width = 15.0f;
-    float height = 15.0f;
+    float width;
+    float height;
+    if (light.type == LightType::LIGHT_DIRECTIONAL) {
+        width = 1e-6f;
+        height = 1e-6f;
+    } else {
+        width = 15.0f;
+        height = 15.0f;
+    }
     int unshadowedCount = 0;
-    int shadowedCount = 0;
 
     float threshold = 0.2f;
 
@@ -255,31 +261,47 @@ float PhongIllumination::calculateShadowFactor(SceneLightData light, glm::vec4 p
         float randomX = (float(std::rand()) / RAND_MAX) - 0.5f;
         float randomY = (float(std::rand()) / RAND_MAX) - 0.5f;
 
-        // float offsetX = randomX * width;
-        // float offsetY = randomY * height;
-
         float offsetX = (s + randomX) * (width / sqrtSampleCount);
         float offsetY = (d + randomY) * (height / sqrtSampleCount);
 
-        glm::vec3 sampleLightPos = glm::vec3(light.pos) + glm::vec3(offsetX, offsetY, 0.0f);
-        glm::vec3 sampleDir = glm::normalize(sampleLightPos - glm::vec3(position));
-        float sampleDist = glm::length(sampleLightPos - glm::vec3(position));
+        if (light.type == LightType::LIGHT_DIRECTIONAL) {
+            glm::vec3 w = glm::normalize(-light.dir);
+            glm::vec3 u = glm::normalize(glm::cross(w, glm::vec3(0,1,0)));
+            glm::vec3 v = glm::normalize(glm::cross(w, u));
 
-        bool inLight = true;
-        if (config.enableShadow) {
-            inLight = checkShadow(glm::vec3(position), sampleDir, sampleDist);
-        }
+            offsetX -= (width / 2);
+            offsetY -= (height / 2);
 
-        if (inLight) {
-            unshadowedCount++;
+            glm::vec3 sampleDir = glm::normalize(w + offsetX * u + offsetY * v);
+            float sampleDist = std::numeric_limits<float>::max();
+
+            bool inLight = true;
+            if (config.enableShadow) {
+                inLight = checkShadow(glm::vec3(position), sampleDir, sampleDist);
+            }
+
+            if (inLight) {
+                unshadowedCount++;
+            }
+        } else {
+            glm::vec3 sampleLightPos = glm::vec3(light.pos) + glm::vec3(offsetX, offsetY, 0.0f);
+            glm::vec3 sampleDir = glm::normalize(sampleLightPos - glm::vec3(position));
+            float sampleDist = glm::length(sampleLightPos - glm::vec3(position));
+
+            bool inLight = true;
+            if (config.enableShadow) {
+                inLight = checkShadow(glm::vec3(position), sampleDir, sampleDist);
+            }
+
+            if (inLight) {
+                unshadowedCount++;
+            }
         }
     }
     }
 
     float shadowFactor = float(unshadowedCount) / float(sampleCount);
 
-    float bias = 2.0f;
-
-    return glm::pow(shadowFactor, bias);
+    return shadowFactor;
 }
 
