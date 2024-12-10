@@ -11,7 +11,7 @@ Sphere::Sphere(RenderShapeData shape, glm::vec4 wEye, glm::vec4 wDirection){
 std::optional<Intersection> Sphere::checkIntersection(float time) {
     glm::vec4 newCenter = centerStart + (centerEnd - centerStart) * time;
     // calculate relative camera position for the intersection after the sphere moves
-    glm::vec4 newPos = p - newCenter;
+    glm::vec4 newPos = p/* - newCenter*/;
 
     Intersection intr = {.t = float(INT_MAX), .u = float(INT_MAX), .v = float(INT_MAX)};
 
