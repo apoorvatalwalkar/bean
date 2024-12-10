@@ -53,7 +53,7 @@ private:
     glm::mat4 myRotate(float angleDegrees, glm::vec3 axis);
     RGBA toRGBA(const glm::vec4 &illumination);
 
-    int numSamples = 10;
+    int numSamples = 1;
 };
 
 struct Intersection{
