@@ -45,7 +45,7 @@ glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
                                         int recur,
                                         float occlusion) {
 
-    bool isSoftShadows = false;
+    bool isSoftShadows = true;
 
     normal = glm::normalize(normal);
     glm::vec3 iRay = {incidentRay[0], incidentRay[1], incidentRay[2]};
