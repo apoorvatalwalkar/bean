@@ -45,7 +45,7 @@ glm::vec4 PhongIllumination::phongLogic(glm::vec4  position,
                                         int recur,
                                         float occlusion) {
 
-    bool isSoftShadows = true;
+    bool isSoftShadows = false;
 
     normal = glm::normalize(normal);
     glm::vec3 iRay = {incidentRay[0], incidentRay[1], incidentRay[2]};
@@ -240,7 +240,7 @@ bool PhongIllumination::checkShadow(glm::vec3 p, glm::vec3 d, float maxT){
 }
 
 float PhongIllumination::calculateShadowFactor(SceneLightData light, glm::vec4 position){
-    int sampleCount = 64;
+    int sampleCount = 16;
     float width = 15.0f;
     float height = 15.0f;
     int unshadowedCount = 0;

@@ -126,12 +126,12 @@ void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
 
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
-            // if ((i * width + j) % 1024 == 0) {
-            //     std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
-            // }
+            if ((i * width + j) % 1024 == 0) {
+                std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
+            }
             glm::vec4 pixelVal = glm::vec4(0.f, 0.f, 0.f, 1.f);
-            // supersampling
 
+            // supersampling
             int numSamples = maxSamples;
             glm::vec4 firstSample = glm::vec4(0.f, 0.f, 0.f, 1.f);
             for (int l = 0; l < maxSamples; l++) {
@@ -174,9 +174,9 @@ void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
                     if (l == 1 && glm::length(sample - firstSample) < sampleThreshold) {
                         numSamples = 2;
                         break;
-                    } else {
+                    } /*else {
                         std::cout << "supersampling" << std::endl;
-                    }
+                    }*/
                 }
             }
             imageData[i * width + j] = toRGBA(pixelVal / float(numSamples));
