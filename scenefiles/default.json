@@ -26,7 +26,7 @@
           "ambient": [0.2, 0.2, 0.2],
           "shininess": 1.0,
           "blend": 1.0,
-          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/buildings.png",
+          "textureFile": "scenefiles/illuminate/textures/buildings.png",
           "textureU": 1.0,
           "textureV": 1.0
         }
@@ -45,7 +45,7 @@
           "ambient": [0.2, 0.2, 0.2],
           "shininess": 1.0,
           "blend": 1.0,
-          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/buildings.png",
+          "textureFile": "scenefiles/illuminate/textures/buildings.png",
           "textureU": 1.0,
           "textureV": 1.0
         }
@@ -64,7 +64,7 @@
           "ambient": [0.2, 0.2, 0.2],
           "shininess": 1.0,
           "blend": 1.0,
-          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/buildings.png",
+          "textureFile": "scenefiles/illuminate/textures/buildings.png",
           "textureU": 1.0,
           "textureV": 1.0
         }
@@ -202,7 +202,7 @@
           "specular": [1, 1, 1],
           "shininess": 1,
           "blend": 1.0,
-          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/buildings.png",
+          "textureFile": "scenefiles/illuminate/textures/buildings.png",
           "textureU": 1,
           "textureV": 1
         }
@@ -220,7 +220,7 @@
           "specular": [1, 1, 1],
           "shininess": 1,
           "blend": 1.0,
-          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/ground_texture.jpg",
+          "textureFile": "scenefiles/illuminate/textures/ground_texture.jpg",
           "textureU": 9.0,
           "textureV": 9.0
         }
@@ -238,7 +238,7 @@
           "specular": [1, 1, 1],
           "shininess": 1,
           "blend": 1.0,
-          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/sky.png",
+          "textureFile": "scenefiles/illuminate/textures/sky.png",
           "textureU": 5.0,
           "textureV": 5.0
         }
@@ -266,7 +266,7 @@
           "type": "mesh",
           "reflective": [0.9, 0.9, 0.9],
           "ambient": [0.2, 0.2, 0.2],
-          "meshFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/intersect/meshes/simplify_bean.obj",
+          "meshFile": "scenefiles/intersect/meshes/simplify_bean.obj",
           "diffuse": [0.8, 0.8, 0.8],
           "specular": [1, 1, 1],
           "shininess": 95.0
