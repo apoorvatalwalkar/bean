@@ -35,7 +35,11 @@ void RayTracer::render(const RayTraceScene &scene) {
     SceneCameraData currData = scene.cameraData;
 
     int frames = 1;
-    if(m_config.cameraMovement){ frames = 160;}
+    if(m_config.cameraMovement){ frames = 120;}
+    float theta = 0.f;
+
+    float magnitude = pow(pow(original.pos[0], 2) + pow(original.pos[2], 2), 0.5);
+    float cameraHeight = original.pos[1];
 
     for(int i = 0; i < frames; i++){
         m_image.fill(Qt::black);
@@ -47,18 +51,15 @@ void RayTracer::render(const RayTraceScene &scene) {
         // camera movement code
         if(m_config.cameraMovement) {
 
-            glm::vec3 up3 = glm::vec3(currData.up);
-            glm::vec3 look3 = glm::vec3(currData.look);
-            glm::vec3 perp = glm::cross(up3, look3);
+            float newX = sin(theta * M_PI / 180.f) * magnitude;
+            float newZ = cos(theta * M_PI / 180.f) * magnitude;
 
-            glm::mat4 rotationX = myRotate(-0.6, glm::vec3(0, 1, 0));
-            newData.look = rotationX * currData.look;
-            newData.up = rotationX * currData.up;
-
-            newData.pos = currData.pos - float(i / 180.f) * glm::normalize(currData.look) - float(i/180.f) * glm::vec4(perp, 0.f);
+            newData.pos = glm::vec4(newX, cameraHeight, newZ, 1);
+            newData.look = -glm::normalize(newData.pos);
 
             newScene.cameraData = newData;
             currData = newData;
+            theta += 3.f;
         }
 
         // render scene
@@ -134,9 +135,9 @@ void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
     auto renderRows = [&](int startRow, int endRow) {
     for (int i = startRow; i < endRow; i++){
         for (int j = 0; j < width; j++){
-            if ((i * width + j) % 1024 == 0) {
-                std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
-            }
+            // if ((i * width + j) % 1024 == 0) {
+            //     std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
+            // }
             glm::vec4 pixelVal = glm::vec4(0.f, 0.f, 0.f, 1.f);
 
             // supersampling
