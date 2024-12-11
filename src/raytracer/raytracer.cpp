@@ -313,7 +313,7 @@ float RayTracer::calcOcclusion(glm::vec4 surfacePos, glm::vec3 surfaceNormal, st
         }
     }
 
-    return occlusion / numSamples;
+    return glm::clamp(occlusion / numSamples + 0.7f, 0.0f, 1.0f);
 }
 
 glm::mat4 RayTracer::myRotate(float angleDegrees, glm::vec3 axis) {
