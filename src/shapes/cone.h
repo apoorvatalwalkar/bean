@@ -18,7 +18,7 @@ private:
     glm::vec4 d;
 
     // for defining start and end of cone movement
-    glm::vec4 centerStart = glm::vec4(0.f, 0.f, 0.f, 1.f);
+    glm::vec4 centerStart = glm::vec4(0.2f, 0.f, 0.f, 1.f);
     glm::vec4 centerEnd = glm::vec4 (0.f, 0.f, 0.5f, 1.f);
 };
 
