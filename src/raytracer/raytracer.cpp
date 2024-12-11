@@ -15,6 +15,10 @@
 #include "utils/tiny_obj_loader.h"
 #include <random>
 
+#include <atomic>
+#include <thread>
+
+const unsigned int numThreads = std::thread::hardware_concurrency();
 
 RayTracer::RayTracer(Config config, QImage image, QString imagePath):
     m_config(config)
@@ -24,6 +28,8 @@ RayTracer::RayTracer(Config config, QImage image, QString imagePath):
 }
 
 void RayTracer::render(const RayTraceScene &scene) {
+
+    std::cout << "number of threads: " << numThreads << std::endl;
 
     SceneCameraData original = scene.cameraData;
     SceneCameraData currData = scene.cameraData;
@@ -124,7 +130,9 @@ void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
 
     glm::mat4 inverseCamera = camera.getInverseViewMatrix();
 
-    for (int i = 0; i < height; i++){
+
+    auto renderRows = [&](int startRow, int endRow) {
+    for (int i = startRow; i < endRow; i++){
         for (int j = 0; j < width; j++){
             if ((i * width + j) % 1024 == 0) {
                 std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
@@ -181,6 +189,24 @@ void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
             }
             imageData[i * width + j] = toRGBA(pixelVal / float(numSamples));
             // }
+        }
+    }
+    };
+    std::vector<std::thread> threads;
+    int rowsPerThread = height / numThreads;
+    int remainingRows = height % numThreads;
+    int currentRow = 0;
+
+    for(unsigned int t = 0; t < numThreads; t++){
+        int startRow = currentRow;
+        int endRow = startRow + rowsPerThread + (t < remainingRows ? 1 : 0);
+        threads.emplace_back(renderRows, startRow, endRow);
+        currentRow = endRow;
+    }
+
+    for(auto &thread : threads){
+        if(thread.joinable()){
+            thread.join();
         }
     }
 }
