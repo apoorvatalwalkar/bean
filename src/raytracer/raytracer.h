@@ -20,7 +20,7 @@ public:
         bool enableSuperSample   = false;
         bool enableAcceleration  = false;
         bool enableDepthOfField  = false;
-        int maxRecursiveDepth    = 4;
+        int maxRecursiveDepth    = 2;
         bool onlyRenderNormals   = false;
         bool cameraMovement      = false;
         bool enableSoftShadows   = false;
