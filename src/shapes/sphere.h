@@ -23,7 +23,7 @@ private:
 
     // for defining start and end of sphere movement
     glm::vec4 centerStart = glm::vec4(0.f, 0.f, 0.f, 1.f);
-    glm::vec4 centerEnd = glm::vec4 (0.f, 0.f, 0.3f, 1.f);
+    glm::vec4 centerEnd = glm::vec4 (0.f, 0.f, 0.5f, 1.f);
 };
 
 #endif // SPHERE_H

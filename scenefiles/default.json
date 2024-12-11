@@ -7,7 +7,7 @@
     "transparentCoeff": 0
   },
   "cameraData": {
-    "position": [0, 0, 5],
+    "position": [0, 0.2, 5],
     "up": [0, 1, 0],
     "heightAngle": 45,
     "look": [0, 0.1, -1]
@@ -72,7 +72,7 @@
     },
     {
       "name": "person4head",
-      "translate": [-0.45, -0.26, 1.45],
+      "translate": [-0.45, -0.26, 1.35],
       "rotate": [0, 1, 0, 0],
       "scale": [0.1, 0.1, 0.1],
       "primitives": [
@@ -102,7 +102,7 @@
     },
     {
       "name": "person3head",
-      "translate": [0, -0.16, 1.8],
+      "translate": [0, -0.16, 1.7],
       "rotate": [0, 1, 0, 0],
       "scale": [0.18, 0.18, 0.18],
       "primitives": [
@@ -147,7 +147,7 @@
     },
     {
       "name": "person2head",
-      "translate": [0.35, -0.16, 1.35],
+      "translate": [0.35, -0.16, 1.25],
       "rotate": [0, 1, 0, 0],
       "scale": [0.18, 0.18, 0.18],
       "primitives": [
@@ -162,7 +162,7 @@
     },
     {
       "name": "person1head",
-      "translate": [2.5, -0.16, 0],
+      "translate": [2.5, -0.16, -0.1],
       "rotate": [0, 1, 0, 0],
       "scale": [0.18, 0.18, 0.18],
       "primitives": [
