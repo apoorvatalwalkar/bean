@@ -56,7 +56,7 @@ private:
     RGBA toRGBA(const glm::vec4 &illumination);
 
     int maxSamples = 1;
-    float sampleThreshold = 1.1f;
+    float sampleThreshold = 1.f;
 };
 
 struct Intersection {

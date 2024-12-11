@@ -71,18 +71,6 @@
       ]
     },
     {
-      "name": "person5head",
-      "translate": [0, 0, 0],
-      "rotate": [0, 1, 0, 0],
-      "scale": [1, 1, 1]
-    },
-    {
-      "name": "person5body",
-      "translate": [0, 0, 0],
-      "rotate": [0, 1, 0, 0],
-      "scale": [1, 1, 1]
-    },
-    {
       "name": "person4head",
       "translate": [-0.45, -0.2, 1.45],
       "rotate": [0, 1, 0, 0],
@@ -239,6 +227,24 @@
       ]
     },
     {
+      "name": "Sky",
+      "translate": [0, 30, 0],
+      "rotate": [0, 1, 0, 0],
+      "scale": [100, 0.1, 100],
+      "primitives": [
+        {
+          "type": "cube",
+          "diffuse": [1, 1, 1],
+          "specular": [1, 1, 1],
+          "shininess": 1,
+          "blend": 1.0,
+          "textureFile": "/Users/eleanorpark/csclasses/cs1230/bean/scenefiles/illuminate/textures/sky.png",
+          "textureU": 5.0,
+          "textureV": 5.0
+        }
+      ]
+    },
+    {
       "name": "Lights",
       "lights": [
         {
@@ -248,7 +254,7 @@
           "direction": [0, 0, 0]
         }
       ],
-      "translate": [0.0, 30.0, 0.0],
+      "translate": [0.0, 28.0, 0.0],
       "rotate": [0, 1, 30, 79]
     },
     {
