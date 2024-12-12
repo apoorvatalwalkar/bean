@@ -55,8 +55,8 @@ private:
     glm::mat4 myRotate(float angleDegrees, glm::vec3 axis);
     RGBA toRGBA(const glm::vec4 &illumination);
 
-    int maxSamples = 25;
-    float sampleThreshold = 1.f;
+    int maxSamples = 10;
+    float sampleThreshold = 1.1f;
 };
 
 struct Intersection {

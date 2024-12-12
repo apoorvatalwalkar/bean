@@ -72,7 +72,7 @@
     },
     {
       "name": "person4head",
-      "translate": [-0.43, -0.26, 1.35],
+      "translate": [-0.44, -0.26, 1.35],
       "rotate": [0, 1, 0, 0],
       "scale": [0.1, 0.1, 0.1],
       "primitives": [
@@ -162,7 +162,7 @@
     },
     {
       "name": "person1head",
-      "translate": [2.5, -0.16, -0.1],
+      "translate": [2.52, -0.16, -0.1],
       "rotate": [0, 1, 0, 0],
       "scale": [0.18, 0.18, 0.18],
       "primitives": [
@@ -266,7 +266,7 @@
           "type": "mesh",
           "reflective": [0.9, 0.9, 0.9],
           "ambient": [0.2, 0.2, 0.2],
-          "meshFile": "scenefiles/intersect/meshes/simplify_bean.obj",
+          "meshFile": "scenefiles/intersect/meshes/simplify_bean_meshfile_80.obj",
           "diffuse": [0.8, 0.8, 0.8],
           "specular": [1, 1, 1],
           "shininess": 95.0

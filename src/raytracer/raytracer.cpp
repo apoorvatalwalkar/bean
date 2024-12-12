@@ -135,9 +135,9 @@ void RayTracer::renderOneScene(RGBA *imageData, const RayTraceScene &scene) {
     auto renderRows = [&](int startRow, int endRow) {
     for (int i = startRow; i < endRow; i++){
         for (int j = 0; j < width; j++){
-            // if ((i * width + j) % 1024 == 0) {
-            //     std::cout << "Working on pixel: (" << i << ", " << j << ")" << std::endl;
-            // }
+            if ((i * width + j) % 2048 == 0) {
+                std::cout << i << ", " << j << std::endl;
+            }
             glm::vec4 pixelVal = glm::vec4(0.f, 0.f, 0.f, 1.f);
 
             // supersampling
