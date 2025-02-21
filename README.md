@@ -1,6 +1,8 @@
 # Bean
 
 ### Group Members: Eleanor Park, Logan Hines, Annika Singh, Apoorva Talwalkar
+![bean0](https://github.com/user-attachments/assets/b5de28e2-1031-4da7-80f4-cf480da9564b)
+
 
 ## Design Choices:
 
