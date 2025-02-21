@@ -4,6 +4,9 @@
 ![bean0](https://github.com/user-attachments/assets/b5de28e2-1031-4da7-80f4-cf480da9564b)
 
 
+https://github.com/user-attachments/assets/7b5b5d5f-38b3-4ff2-b98c-a322c34adc5b
+
+
 ## Design Choices:
 
 In our project, we utilized our Raytracer from projects 3 and 4 as a base, and added on additional features to render a simulation of The Bean (Cloud Gate) in Chicago, Illinois. To add mesh support, we utilized the TinyOBJLoader, which read the vertices of our OBJ file and converted them into points and normals. To allow for mesh rendering, we implemented triangle rendering, and used those triangles to make up the shape of the bean.
